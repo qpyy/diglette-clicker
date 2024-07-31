@@ -6,13 +6,13 @@ import {
   Description,
   DiglettImage,
   LinkGroup,
-  LinkButton,
   SocialIcons,
   SocialIcon,
   Footer,
 } from "./styles";
 import diglettImage from "../../assets/images/diglett-welcome.png";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
+import CustomLink from "../../components/UI/CustomLink";
 
 const Home = () => {
   return (
@@ -27,8 +27,8 @@ const Home = () => {
         </Description>
         <DiglettImage src={diglettImage} alt="Diglett" />
         <LinkGroup>
-          <LinkButton to="/profile">Sign Up</LinkButton>
-          <LinkButton to="/profile">Sign In</LinkButton>
+          <CustomLink pathTo="/profile" buttonText="Sign Up" />
+          <CustomLink pathTo="/profile" buttonText="Sign In" />
         </LinkGroup>
         <SocialIcons>
           <SocialIcon href="https://facebook.com" target="_blank" aria-label="Facebook">
