@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div``;
@@ -39,28 +38,6 @@ const LinkGroup = styled.div`
   margin-bottom: 2rem;
 `;
 
-const LinkButton = styled(Link)`
-  background-color: #1a1a1a;
-  color: #ffffff;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  text-decoration: none;
-  text-align: center;
-  font-weight: 500;
-  cursor: pointer;
-  transition: border-color 0.25s;
-
-  &:hover {
-    border-color: #646cff;
-  }
-
-  &:focus {
-    outline: 4px auto -webkit-focus-ring-color;
-  }
-`;
-
 const SocialIcons = styled.div`
   display: flex;
   gap: 1rem;
@@ -90,7 +67,6 @@ export {
   Description,
   DiglettImage,
   LinkGroup,
-  LinkButton,
   SocialIcons,
   SocialIcon,
   Footer,
