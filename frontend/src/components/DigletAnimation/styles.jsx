@@ -5,7 +5,7 @@ const moveUpAndDownLarge = keyframes`
     transform: translateY(30%) rotate(6deg);
   }
   50% {
-    transform: translateY(10%) rotate(10deg);
+    transform: translateY(20%) rotate(10deg);
   }
   100% {
     transform: translateY(30%) rotate(6deg);
@@ -17,7 +17,7 @@ const moveUpAndDownMedium = keyframes`
     transform: translateY(20%) rotate(6deg);
   }
   50% {
-    transform: translateY(5%) rotate(10deg);
+    transform: translateY(10%) rotate(10deg);
   }
   100% {
     transform: translateY(20%) rotate(6deg);
@@ -26,13 +26,13 @@ const moveUpAndDownMedium = keyframes`
 
 const moveUpAndDownSmall = keyframes`
   0% {
-    transform: translateY(15%) rotate(6deg);
+    transform: translateY(10%) rotate(6deg);
   }
   50% {
     transform: translateY(0%) rotate(10deg);
   }
   100% {
-    transform: translateY(15%) rotate(6deg);
+    transform: translateY(10%) rotate(6deg);
   }
 `;
 
@@ -84,7 +84,7 @@ const Diglet = styled.img`
   }
 
   @media (max-width: 350px) {
-    transform: translateY(15%) rotate(6deg);
+    transform: translateY(10%) rotate(6deg);
     animation: ${({ animate }) => (animate ? moveUpAndDownSmall : "none")} 0.3s forwards;
   }
 `;
