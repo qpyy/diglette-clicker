@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Создаём подключение к базе данных
-const sequelize = new Sequelize('postgresql://postgres:admin@localhost:5432/postgres');
+const sequelize = new Sequelize('postgresql://postgres:Edega2003@host.docker.internal:5432/clicker');
 
 const Users = sequelize.define(
   'Users',

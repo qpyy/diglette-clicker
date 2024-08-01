@@ -1,0 +1,7 @@
+node_modules/
+pgdata/
+*dockerfile
+*docker-compose.yml
+*DB.sql
+*.dockerignore
+*.pgdata
