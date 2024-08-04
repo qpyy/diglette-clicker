@@ -1,7 +1,8 @@
 const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
 
 // Создаём подключение к базе данных
-const sequelize = new Sequelize('postgresql://postgres:Edega2003@host.docker.internal:5432/clicker');
+const sequelize = new Sequelize(process.env.DATABASE_URL);
 
 const Users = sequelize.define(
   'Users',
@@ -19,7 +20,6 @@ const Users = sequelize.define(
     login: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     password: {
       type: DataTypes.STRING,
@@ -34,7 +34,8 @@ const Users = sequelize.define(
       allowNull: true,
     },
     coins: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
   }, {
   timestamps: true,

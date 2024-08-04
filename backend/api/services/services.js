@@ -1,5 +1,3 @@
-const { SmsAero, SmsAeroError, SmsAeroHTTPError } = require('smsaero');
-const smsAeroClient = new SmsAero('o.kasaryan@gmail.com', '1tYYSQrN3Ft3NVSPFFDlxABbV6R');
 
 const registrationValidation = (telephone, password) => {
   const phoneRegex = /^\+?\d{1,3}?[-\s]?\(?\d{1,3}\)?[-\s]?\d{3}[-\s]?\d{2}[-\s]?\d{2}$/;
@@ -12,20 +10,20 @@ const registrationValidation = (telephone, password) => {
   }
 };
 
-const sendResetPasswordSMS = async (telephone, resetToken) => {
-  try {
-    await smsAeroClient.send(telephone, `Click the following link to reset your password: https://your-website.com/reset-password?token=${resetToken}`);
-    console.log(`SMS sent to ${telephone}`);
-  } catch (error) {
-    if (error instanceof SmsAeroError) {
-      console.error('Не удалось из-за ошибки SmsAero:', error.message);
-    } else if (error instanceof SmsAeroHTTPError) {
-      console.error('Не удалось отправить код из-за HTTP ошибки:', error.message);
-    } else {
-      console.error('Произошла неизвестная ошибка', error);
-    }
-  }
-}
+// const sendResetPasswordSMS = async (telephone, resetToken) => {
+//   try {
+//     await smsAeroClient.send(telephone, `Click the following link to reset your password: https://your-website.com/reset-password?token=${resetToken}`);
+//     console.log(`SMS sent to ${telephone}`);
+//   } catch (error) {
+//     if (error instanceof SmsAeroError) {
+//       console.error('Не удалось из-за ошибки SmsAero:', error.message);
+//     } else if (error instanceof SmsAeroHTTPError) {
+//       console.error('Не удалось отправить код из-за HTTP ошибки:', error.message);
+//     } else {
+//       console.error('Произошла неизвестная ошибка', error);
+//     }
+//   }
+// }
 
 // Это регулярное выражение проверяет, что пароль:
 
@@ -46,4 +44,4 @@ const sendResetPasswordSMS = async (telephone, resetToken) => {
 // 7. $ - конец строки
 
 
-module.exports = { registrationValidation, sendResetPasswordSMS };
+module.exports = { registrationValidation };

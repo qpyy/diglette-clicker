@@ -5,8 +5,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const { Users } = require("./sequalize.js");
 const {
-  registrationValidation,
-  sendResetPasswordSMS,
+  registrationValidation
 } = require("./services/services.js");
 
 // Добавляем jwt токен
@@ -74,11 +73,7 @@ fastify.post("/Registration", async (req, reply) => {
     // Проверяем, есть ли пользователь с таким же телефоном
     const existingUser = await Users.findOne({ where: { telephone } });
     if (existingUser) {
-      return reply
-        .status(400)
-        .send({
-          error: "Пользователь с таким номером телефона уже существует",
-        });
+      return reply.status(400).send({ error: "Пользователь с таким номером телефона уже существует", });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
