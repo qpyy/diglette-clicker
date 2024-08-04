@@ -1,8 +1,12 @@
 const { Sequelize, DataTypes } = require('sequelize');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 // Создаём подключение к базе данных
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialect: 'postgres'
+});
+
 
 const Users = sequelize.define(
   'Users',
@@ -44,12 +48,9 @@ const Users = sequelize.define(
 }
 );
 
-// Позже добавить администратора
-
-// Синхронизация модели с базой данных
 (async () => {
   try {
-    await Users.sync({ force: false }); // Синхронизируем модель users
+    await Users.sync({ force: false }); // Синхронизируем модель users, если в базе данных не создана модель, написать true, после выполнения сразу написать false
     await sequelize.authenticate();
     console.log('Соединение с БД было успешно установлено');
   } catch (e) {

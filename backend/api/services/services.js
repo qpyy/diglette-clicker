@@ -1,47 +1,68 @@
+const bcrypt = require("bcryptjs");
+const { Users } = require("../models/sequalize");
+const jwt = require('jsonwebtoken');
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
-const registrationValidation = (telephone, password) => {
-  const phoneRegex = /^\+?\d{1,3}?[-\s]?\(?\d{1,3}\)?[-\s]?\d{3}[-\s]?\d{2}[-\s]?\d{2}$/;
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[a-zA-Z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
 
-  if (phoneRegex.test(telephone) && passwordRegex.test(password)) {
-    return false;
-  } else {
-    return true;
+const getUser = async (body) => {
+  try {
+    const { login, password } = body;
+    console.log(body);
+    const user = await Users.findOne({ where: { login } });
+
+    if (!user) {
+      return { error: "Неправильный логин или пароль" };
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return { error: "Неправильный логин или пароль" };
+    }
+
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    return { user: user.toJSON().login, token };
+  } catch (error) {
+    return error;
   }
 };
 
-// const sendResetPasswordSMS = async (telephone, resetToken) => {
-//   try {
-//     await smsAeroClient.send(telephone, `Click the following link to reset your password: https://your-website.com/reset-password?token=${resetToken}`);
-//     console.log(`SMS sent to ${telephone}`);
-//   } catch (error) {
-//     if (error instanceof SmsAeroError) {
-//       console.error('Не удалось из-за ошибки SmsAero:', error.message);
-//     } else if (error instanceof SmsAeroHTTPError) {
-//       console.error('Не удалось отправить код из-за HTTP ошибки:', error.message);
-//     } else {
-//       console.error('Произошла неизвестная ошибка', error);
-//     }
-//   }
-// }
+const createUser = async (body) => {
+  try {
+    const { email, login, password } = body;
 
-// Это регулярное выражение проверяет, что пароль:
-
-// 1. Содержит как минимум одну строчную букву ([a-z])
-// 2. Содержит как минимум одну заглавную букву ([A-Z])
-// 3. Содержит как минимум одну цифру (\d)
-// 4. Содержит как минимум один специальный символ (!@#$%^&*(),.?":{}|<>)
-// 5. Содержит как минимум 8 символов ({8,})
-
-// Это регулярное выражение проверяет, что номер телефона:
-
-// 1. ^ - начало строки
-// 2. (\+7|7|8)? - опциональный код страны (может быть +7, 7 или 8)
-// 3. (\d{3}) - трехзначный код города
-// 4. (\d{3}) - три цифры местного номера
-// 5. (\d{2}) - две цифры первой пары
-// 6. (\d{2}) - две цифры второй пары
-// 7. $ - конец строки
+    const existingUser = await Users.findOne({
+      where: {
+        email: email,
+        login: login
+      }
+    });
 
 
-module.exports = { registrationValidation };
+
+    if (existingUser) {
+      return { error: "Пользователь с такой почтой или логином уже существует" };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await Users.create({
+      email,
+      login,
+      password: hashedPassword,
+    });
+
+    const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    return { user: newUser.toJSON().login, token };
+  } catch (error) {
+    return error;
+  }
+};
+
+module.exports = { getUser, createUser };
