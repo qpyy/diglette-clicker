@@ -1,6 +1,7 @@
 const {
   createUser,
   getUser,
+  addCoinsToUserAccount,
 } = require("../services/services");
 
 const registerUser = async (req, res) => {
@@ -33,7 +34,20 @@ const authUser = async (req, res) => {
   };
 };
 
+const addCoin = async (req, res) => {
+  try {
+    const resultAddToCoin = await addCoinsToUserAccount(req.body);
+
+    res.status(201).send(resultAddToCoin);
+  } catch (error) {
+    console.log('Произошла ошибка:', error.name, '-', error.message);
+    console.log('Трассировка стека:', error.stack);
+    res.status(400).send("Error authorization");
+  };
+};
+
 module.exports = {
   registerUser,
-  authUser
+  authUser,
+  addCoin
 }
