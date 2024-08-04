@@ -10,7 +10,7 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
-  const { signUp, isLoading, isError, error } = useSignUp();
+  const { signUp, isLoading, error } = useSignUp();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -23,6 +23,7 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       await signUp(formData);
       navigate("/profile");
@@ -54,15 +55,15 @@ const SignUpPage = () => {
           onChange={handleChange}
         />
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Signing Up..." : "Sign Up"}
+          {isLoading ? "Signing Up..." : "СREATE ACCOUNT"}
         </Button>
       </Form>
 
       <CustomSnackbar
-        open={openSnackbar || isError}
+        open={openSnackbar}
         message={error?.message || "Failed to sign up"}
         handleClose={handleCloseSnackbar}
-        autoHideDuration={2500}
+        autoHideDuration={2000}
       />
     </Container>
   );

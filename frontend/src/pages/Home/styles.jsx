@@ -17,7 +17,6 @@ const MainContent = styled.main`
 const Title = styled.h1`
   font-size: 3rem;
   margin-bottom: 1rem;
-  font-family: "Rubik Moonrocks", sans-serif;
 `;
 
 const Description = styled.p`
@@ -43,16 +42,6 @@ const SocialIcons = styled.div`
   gap: 1rem;
 `;
 
-const SocialIcon = styled.a`
-  color: #ffffff;
-  font-size: 2rem;
-  transition: color 0.25s;
-
-  &:hover {
-    color: #646cff;
-  }
-`;
-
 const Footer = styled.footer`
   text-align: center;
   margin-top: 2rem;
@@ -68,6 +57,5 @@ export {
   DiglettImage,
   LinkGroup,
   SocialIcons,
-  SocialIcon,
   Footer,
 };

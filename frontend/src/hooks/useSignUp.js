@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useStore } from "../store/useStore";
-import { signUp } from "../services";
+import { signUpService } from "../services";
 
 export const useSignUp = () => {
   const { setUser, setToken } = useStore((state) => ({
@@ -9,7 +9,7 @@ export const useSignUp = () => {
   }));
 
   const signUpMutation = useMutation({
-    mutationFn: signUp,
+    mutationFn: signUpService,
     onSuccess: (data) => {
       setUser(data.user);
       setToken(data.token);
