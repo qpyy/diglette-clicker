@@ -22,4 +22,14 @@ const StyledCustomLink = styled(Link)`
   }
 `;
 
-export { StyledCustomLink };
+const ExternalCustomLink = styled.a`
+  color: #ffffff;
+  font-size: 2rem;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #646cff;
+  }
+`;
+
+export { StyledCustomLink, ExternalCustomLink };

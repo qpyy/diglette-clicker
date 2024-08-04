@@ -9,7 +9,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 
 const Users = sequelize.define(
-  'Users',
+  "Users",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -52,13 +52,13 @@ const Users = sequelize.define(
   try {
     await Users.sync({ force: false }); // Синхронизируем модель users, если в базе данных не создана модель, написать true, после выполнения сразу написать false
     await sequelize.authenticate();
-    console.log('Соединение с БД было успешно установлено');
+    console.log("Соединение с БД было успешно установлено");
   } catch (e) {
-    console.log('Невозможно выполнить подключение к БД: ', e);
+    console.log("Невозможно выполнить подключение к БД: ", e);
   }
 })();
 
 module.exports = {
   sequelize,
-  Users
+  Users,
 };

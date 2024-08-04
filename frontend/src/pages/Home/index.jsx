@@ -1,3 +1,6 @@
+import CustomLink from "../../components/UI/CustomLink";
+import { FaXTwitter, FaFacebook, FaInstagram } from "react-icons/fa6";
+import diglettImage from "../../assets/images/diglett-welcome.png";
 import {
   Container,
   Header,
@@ -7,12 +10,8 @@ import {
   DiglettImage,
   LinkGroup,
   SocialIcons,
-  SocialIcon,
   Footer,
 } from "./styles";
-import diglettImage from "../../assets/images/diglett-welcome.png";
-import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
-import CustomLink from "../../components/UI/CustomLink";
 
 const Home = () => {
   return (
@@ -27,19 +26,13 @@ const Home = () => {
         </Description>
         <DiglettImage src={diglettImage} alt="Diglett" />
         <LinkGroup>
-          <CustomLink pathTo="/profile" buttonText="Sign Up" />
-          <CustomLink pathTo="/profile" buttonText="Sign In" />
+          <CustomLink pathTo="/signup" linkText="Sign Up" />
+          <CustomLink pathTo="/profile" linkText="Sign In" />
         </LinkGroup>
         <SocialIcons>
-          <SocialIcon href="https://facebook.com" target="_blank" aria-label="Facebook">
-            <FaFacebook />
-          </SocialIcon>
-          <SocialIcon href="https://twitter.com" target="_blank" aria-label="Twitter">
-            <FaTwitter />
-          </SocialIcon>
-          <SocialIcon href="https://instagram.com" target="_blank" aria-label="Instagram">
-            <FaInstagram />
-          </SocialIcon>
+          <CustomLink pathTo="https://facebook.com" linkText={<FaFacebook />} external />
+          <CustomLink pathTo="https://twitter.com" linkText={<FaXTwitter />} external />
+          <CustomLink pathTo="https://instagram.com" linkText={<FaInstagram />} external />
         </SocialIcons>
       </MainContent>
       <Footer>&copy; 2024 Diglett Clicker Game. All rights reserved.</Footer>
