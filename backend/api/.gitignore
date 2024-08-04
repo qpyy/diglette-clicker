@@ -2,4 +2,3 @@ node_modules/
 pgdata/
 *.pgdata
 .env
-api_1.0/
