@@ -41,8 +41,6 @@ const createUser = async (body) => {
       }
     });
 
-
-
     if (existingUser) {
       return { error: "Пользователь с такой почтой или логином уже существует" };
     }
@@ -65,4 +63,36 @@ const createUser = async (body) => {
   }
 };
 
-module.exports = { getUser, createUser };
+const addCoinsToUserAccount = async (body) => {
+  try {
+    const { login, coin } = body;
+
+    const existingUser = await Users.findOne({ where: { login } });
+
+    if (!existingUser) {
+      throw new Error(`Пользователь со следующим логином ${login} не найден`);
+    }
+
+    if (coin <= 0) {
+      throw new Error('Количество монет должно быть положительным числом');
+    }
+
+
+
+    existingUser.coins += coin;
+
+    await existingUser.save();
+
+    return { statusCode: 200, message: 'Монеты успешно добавлены' };
+
+  } catch (error) {
+    if (error.message.includes('не найден')) {
+      return { statusCode: 404, error: 'Not Found', message: error.message };
+    } else {
+      return { statusCode: 500, error: 'Internal Server Error', message: error.message };
+    }
+  }
+}
+
+
+module.exports = { getUser, createUser, addCoinsToUserAccount };

@@ -29,6 +29,7 @@ connectServer();
 fastify.register((instance, opts, done) => {
   instance.route(router().registration);
   instance.route(router().authorization);
+  instance.route(router().takeCoin)
   done();
 }, { prefix: '/diglette-clicker/' });
 

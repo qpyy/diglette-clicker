@@ -1,5 +1,5 @@
 const { validationAuthorization, validationRegistration } = require('../middleware/users-validation');
-const { registerUser, authUser } = require('../controllers/controllers');
+const { registerUser, authUser, addCoin } = require('../controllers/controllers');
 
 function router() {
   return {
@@ -35,11 +35,24 @@ function router() {
         },
         preHandler: validationAuthorization
       }
+    },
+    takeCoin: {
+      method: 'POST',
+      url: 'coin',
+      handler: addCoin,
+      schema: {
+        body: {
+          type: 'object',
+          required: ['login', 'coin'],
+          properties: {
+            login: { type: 'string' },
+            coin: { type: 'number' }
+          }
+        },
+      }
     }
   };
 }
 
 module.exports = { router };
 
-
-exports.module = { router }
