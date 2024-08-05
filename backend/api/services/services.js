@@ -83,7 +83,7 @@ const addCoinsToUserAccount = async (body) => {
 
     await existingUser.save();
 
-    return { statusCode: 200, message: 'Монеты успешно добавлены' };
+    return existingUser.coins;
 
   } catch (error) {
     if (error.message.includes('не найден')) {
