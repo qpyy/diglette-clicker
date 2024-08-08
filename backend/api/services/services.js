@@ -1,7 +1,11 @@
 const bcrypt = require("bcryptjs");
-const { Users } = require("../models/sequalize");
+const { Users, sequelize } = require("../models/sequalize");
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const { mailService } = require('./mail-service');
+const { tokenService, saveToken } = require('./token-service');
+const UserDto = require("../dtos/user-dto");
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 
@@ -42,26 +46,51 @@ const createUser = async (body) => {
     });
 
     if (existingUser) {
-      return { error: "Пользователь с такой почтой или логином уже существует" };
+      return {
+        statusCode: 400,
+        error: "Пользователь с такой почтой или логином уже существует"
+      };
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const activationLink = uuidv4();
 
     const newUser = await Users.create({
       email,
       login,
       password: hashedPassword,
+      activationLink
     });
 
-    const token = jwt.sign({ userId: newUser.id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    try {
+      await mailService(email, `${process.env.API_URL}/activate/${activationLink}`);
+      // Обработка успешного ответа
+      const userDto = new UserDto(newUser);
+      const tokens = await tokenService(userDto.toJSON());
 
-    return { user: newUser.toJSON().login, token };
+      await saveToken(userDto.toJSON().id, tokens.refreshToken);
+
+      return {
+        statusCode: 201,
+        data: {
+          ...tokens,
+          user: userDto
+        }
+      };
+    } catch (err) {
+      console.error('Error in mail service:', err);
+      throw new Error('Failed to send activation email');
+    }
+
   } catch (error) {
-    return error;
+    return {
+      statusCode: 500,
+      error: 'Ошибка при создании пользователя',
+      message: error.message
+    };
   }
 };
+
 
 const addCoinsToUserAccount = async (body) => {
   try {

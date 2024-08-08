@@ -1,5 +1,5 @@
 const { validationAuthorization, validationRegistration } = require('../middleware/users-validation');
-const { registerUser, authUser, addCoin } = require('../controllers/controllers');
+const { registerUser, authUser, addCoin, logout, refresh, activate } = require('../controllers/controllers');
 
 function router() {
   return {
@@ -10,11 +10,11 @@ function router() {
       schema: {
         body: {
           type: 'object',
-          required: ['login'],
+          required: ['email', 'login', 'password'],
           properties: {
-            login: { type: 'string' },
-            email: { type: 'string' },
-            password: { type: 'string' }
+            accessToken: { type: 'string' },
+            refreshToken: { type: 'string' },
+            user: { type: 'object' }
           }
         },
         preHandler: validationRegistration
@@ -27,7 +27,7 @@ function router() {
       schema: {
         body: {
           type: 'object',
-          required: ['login'],
+          required: ['login', 'password'],
           properties: {
             login: { type: 'string' },
             password: { type: 'string' }
@@ -50,6 +50,21 @@ function router() {
           }
         },
       }
+    },
+    logout: {
+      method: 'POST',
+      url: 'logout',
+      handler: logout,
+    },
+    activate: {
+      method: 'GET',
+      url: 'activate/:link',
+      handler: activate,
+    },
+    refresh: {
+      method: 'GET',
+      url: 'refresh',
+      handler: refresh,
     }
   };
 }
