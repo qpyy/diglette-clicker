@@ -1,16 +1,16 @@
 import { useMutation } from "@tanstack/react-query";
 import { useStore } from "../store/useStore";
-import { signUpService } from "../services";
+import { logInService } from "../services";
 
-export const useSignUp = () => {
+export const useLogIn = () => {
   const { setUser, setAccessToken, setRefreshToken } = useStore((state) => ({
     setUser: state.setUser,
     setAccessToken: state.setAccessToken,
     setRefreshToken: state.setRefreshToken,
   }));
 
-  const signUpMutation = useMutation({
-    mutationFn: signUpService,
+  const loginMutation = useMutation({
+    mutationFn: logInService,
     onSuccess: (data) => {
       setUser(data.user);
       setAccessToken(data.accessToken);
@@ -19,9 +19,9 @@ export const useSignUp = () => {
   });
 
   return {
-    signUp: signUpMutation.mutateAsync,
-    isLoading: signUpMutation.isLoading,
-    isError: signUpMutation.isError,
-    error: signUpMutation.error,
+    logIn: loginMutation.mutateAsync,
+    isLoading: loginMutation.isLoading,
+    isError: loginMutation.isError,
+    error: loginMutation.error,
   };
 };

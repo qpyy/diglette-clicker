@@ -2,39 +2,35 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
+import { useLogIn } from "../../hooks/useLogin";
+import { Container, Form, Title, Button } from "./styles";
 import CustomLink from "../../components/UI/CustomLink";
-import { useSignUp } from "../../hooks/useSignUp";
-import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } from "./styles";
+import { DividerText } from "./styles";
 
-const SignUpPage = () => {
+const SignInPage = () => {
   const [formData, setFormData] = useState({
-    email: "",
     login: "",
     password: "",
   });
   const [errors, setErrors] = useState({});
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const { signUp, isLoading, error } = useSignUp();
+  const { logIn, isLoading, error } = useLogIn();
   const navigate = useNavigate();
 
-  const validateForm = ({ email, password, login }) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const loginPattern = /^[0-9A-Za-z]{6,16}$/;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const validateForm = ({ login, password }) => {
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
+    const loginPattern = /^[0-9A-Za-z]{6,16}$/;
     const errors = {};
     setErrors({});
-
-    if (!email.trim()) {
-      errors.email = "Email is required.";
-      setErrors(errors);
-      return errors;
-    }
-
-    if (!emailPattern.test(email)) {
-      errors.email = "Invalid email address.";
-      setErrors(errors);
-      return errors;
-    }
 
     if (!login.trim()) {
       errors.login = "Login is required.";
@@ -63,15 +59,6 @@ const SignUpPage = () => {
     return errors;
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm(formData);
@@ -82,7 +69,7 @@ const SignUpPage = () => {
     }
 
     try {
-      await signUp(formData);
+      await logIn(formData);
       navigate("/profile");
     } catch {
       setOpenSnackbar(true);
@@ -94,17 +81,9 @@ const SignUpPage = () => {
   };
 
   return (
-    <StyledContainer>
-      <StyledForm onSubmit={handleSubmit}>
-        <StyledTitle>Sign Up</StyledTitle>
-        <CustomInput
-          name="email"
-          inputType="email"
-          placeholderText="Your email..."
-          handleChangeInput={handleChange}
-          value={formData.email}
-          errorMessage={errors.email}
-        />
+    <Container>
+      <Form onSubmit={handleSubmit}>
+        <Title>Log In</Title>
         <CustomInput
           name="login"
           inputType="text"
@@ -112,6 +91,7 @@ const SignUpPage = () => {
           handleChangeInput={handleChange}
           value={formData.login}
           errorMessage={errors.login}
+          autoCompleteValue="username"
         />
         <CustomInput
           name="password"
@@ -120,14 +100,15 @@ const SignUpPage = () => {
           handleChangeInput={handleChange}
           value={formData.password}
           errorMessage={errors.password}
+          autoCompleteValue="current-password"
         />
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Signing Up..." : "CREATE ACCOUNT"}
+          {isLoading ? "Loading..." : "Log In"}
         </Button>
 
-        <StyledDividerText>Already have an account?</StyledDividerText>
-        <CustomLink pathTo="/signin" linkText="SIGN IN" />
-      </StyledForm>
+        <DividerText>Don&apos;t have an account yet?</DividerText>
+        <CustomLink pathTo="/signup" linkText="SIGN UP" />
+      </Form>
 
       <CustomSnackbar
         open={openSnackbar}
@@ -135,8 +116,8 @@ const SignUpPage = () => {
         handleClose={handleCloseSnackbar}
         autoHideDuration={2000}
       />
-    </StyledContainer>
+    </Container>
   );
 };
 
-export default SignUpPage;
+export default SignInPage;

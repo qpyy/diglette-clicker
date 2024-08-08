@@ -47,14 +47,10 @@ body {
   min-width: 320px;
   min-height: 100vh;
 
-  background: rgb(217, 169, 108);
-  background: -moz-radial-gradient(circle, rgba(217, 169, 108, 1) 40%, rgba(144, 100, 78, 1) 100%);
-  background: -webkit-radial-gradient(
-    circle,
-    rgba(217, 169, 108, 1) 40%,
-    rgba(144, 100, 78, 1) 100%
-  );
-  background: radial-gradient(circle, rgba(217, 169, 108, 1) 40%, rgba(144, 100, 78, 1) 100%);
+  background: #d9a96c;
+  background: -moz-radial-gradient(circle, #d9a96c 40%, #90644e 100%);
+  background: -webkit-radial-gradient(circle, #d9a96c 40%, #90644e 100%);
+  background: radial-gradient(circle, #d9aa6d 40%, #90644e 100%);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#d9a96c",endColorstr="#90644e",GradientType=1);
 
   background-repeat: no-repeat;
@@ -65,6 +61,7 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
   font-family: "Rubik Moonrocks", sans-serif;
+  -webkit-text-stroke: 2px #553a2d;
 }
 
 button {
