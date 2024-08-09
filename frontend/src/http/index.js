@@ -27,17 +27,18 @@ $api.interceptors.response.use(
 
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      try {
-        const data = await refreshAccessToken(refreshToken);
-        const { accessToken } = data;
 
-        setAccessToken(accessToken);
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      try {
+        const newAccessToken = await refreshAccessToken(refreshToken);
+
+        setAccessToken(newAccessToken);
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return $api(originalRequest);
       } catch (refreshError) {
         logout();
         window.location.href = "/signin";
+
         return Promise.reject(refreshError);
       }
     }
