@@ -22,7 +22,7 @@ const mailService = async (to, link) => {
       html: `
         <div style="font-family: Arial, sans-serif; text-align: center; background: radial-gradient(circle, rgba(217, 169, 108, 1) 40%, rgba(144, 100, 78, 1) 100%); padding: 40px 0;">
           <div style="background-color: white; padding: 30px; border-radius: 8px; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #333;">Для активации в diglette clicler профиля перейдите по ссылке</h1>
+            <h1 style="color: #333;">Для активации в diglette clicker профиля перейдите по ссылке</h1>
             <a href="${link}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 4px; font-size: 16px; margin-top: 20px;">Активировать</a>
           </div>
         </div>

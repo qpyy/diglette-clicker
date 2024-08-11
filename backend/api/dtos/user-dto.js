@@ -1,18 +1,24 @@
 class UserDto {
-  email;
   id;
+  email;
+  login;
+  coins;
   isActivated;
 
   constructor(model) {
-    this.email = model.email;
     this.id = model.id;
+    this.email = model.email;
+    this.login = model.login;
+    this.coins = model.coins;
     this.isActivated = model.isActivated;
   }
 
   toJSON() {
     return {
-      email: this.email,
       id: this.id,
+      email: this.email,
+      login: this.login,
+      coins: this.coins,
       isActivated: this.isActivated
     }
 

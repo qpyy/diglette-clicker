@@ -7,7 +7,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres'
 });
 
-
 const Users = sequelize.define(
   "Users",
   {
@@ -40,7 +39,6 @@ const Users = sequelize.define(
     },
     coins: {
       type: DataTypes.INTEGER,
-      allowNull: true
     },
   }, {
   timestamps: true,
