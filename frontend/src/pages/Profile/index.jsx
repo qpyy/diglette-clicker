@@ -2,7 +2,7 @@ import { useState } from "react";
 import DigletAnimation from "../../components/DigletAnimation";
 import { Container } from "./styles";
 
-const Main = () => {
+const Profile = () => {
   const [count, setCount] = useState(0);
 
   const incrementCount = () => {
@@ -17,4 +17,4 @@ const Main = () => {
   );
 };
 
-export default Main;
+export default Profile;

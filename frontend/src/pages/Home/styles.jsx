@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
-const Container = styled.div``;
+const Container = styled.div`
+  padding: 2rem;
+`;
 
 const Header = styled.header`
   text-align: center;
@@ -17,18 +19,30 @@ const MainContent = styled.main`
 const Title = styled.h1`
   font-size: 3rem;
   margin-bottom: 1rem;
+
+  @media (max-width: 380px) {
+    font-size: 2rem;
+  }
 `;
 
 const Description = styled.p`
   font-size: 1.5rem;
   margin-bottom: 2rem;
   max-width: 600px;
+
+  @media (max-width: 380px) {
+    font-size: 1.3rem;
+  }
 `;
 
 const DiglettImage = styled.img`
   width: 300px;
   height: auto;
   margin-bottom: 2rem;
+
+  @media (max-width: 380px) {
+    width: 250px;
+  }
 `;
 
 const LinkGroup = styled.div`

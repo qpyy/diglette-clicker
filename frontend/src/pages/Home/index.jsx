@@ -27,7 +27,7 @@ const Home = () => {
         <DiglettImage src={diglettImage} alt="Diglett" />
         <LinkGroup>
           <CustomLink pathTo="/signup" linkText="Sign Up" />
-          <CustomLink pathTo="/profile" linkText="Sign In" />
+          <CustomLink pathTo="/signin" linkText="Sign In" />
         </LinkGroup>
         <SocialIcons>
           <CustomLink pathTo="https://facebook.com" linkText={<FaFacebook />} external />

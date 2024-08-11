@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const StyledContainer = styled.div`
+const Container = styled.div`
   width: 450px;
   height: 500px;
 
@@ -17,7 +17,7 @@ const StyledContainer = styled.div`
   }
 `;
 
-const StyledForm = styled.form`
+const Form = styled.form`
   display: flex;
   flex-direction: column;
   backdrop-filter: blur(8px);
@@ -31,7 +31,7 @@ const StyledForm = styled.form`
   }
 `;
 
-const StyledTitle = styled.h1`
+const Title = styled.h1`
   font-size: 2rem;
   margin-bottom: 1rem;
 `;
@@ -49,7 +49,7 @@ const Button = styled.button`
   }
 `;
 
-const StyledDividerText = styled.h4`
+const DividerText = styled.h4`
   display: flex;
   align-items: center;
   text-align: center;
@@ -64,4 +64,4 @@ const StyledDividerText = styled.h4`
   }
 `;
 
-export { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText };
+export { Container, Form, Title, Button, DividerText };

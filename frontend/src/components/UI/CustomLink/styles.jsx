@@ -6,7 +6,7 @@ const StyledCustomLink = styled(Link)`
   color: #ffffff;
   border: 2px solid #483227;
   border-radius: 8px;
-  padding: 0.4em 1em;
+  padding: 0.3em 1em;
   font-size: 20px;
   text-decoration: none;
   text-align: center;

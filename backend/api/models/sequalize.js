@@ -1,10 +1,10 @@
-const { Sequelize, DataTypes, BOOLEAN } = require('sequelize');
-const path = require('path');
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+const { Sequelize, DataTypes, BOOLEAN } = require("sequelize");
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 // Создаём подключение к базе данных
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'postgres'
+  dialect: "postgres",
 });
 
 const Users = sequelize.define(
@@ -40,36 +40,40 @@ const Users = sequelize.define(
     coins: {
       type: DataTypes.INTEGER,
     },
-  }, {
-  timestamps: true,
-  createdAt: 'created_at',
-  updatedAt: 'updated_at'
-});
+  },
+  {
+    timestamps: true,
+    createdAt: "created_at",
+    updatedAt: "updated_at",
+  }
+);
 
 // Модель TokenSchema
 const TokenSchema = sequelize.define(
-  "TokenSchema", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  refreshToken: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: Users,
-      key: 'id',
+  "TokenSchema",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    refreshToken: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Users,
+        key: "id",
+      },
     },
   },
-}, {
-  timestamps: true,
-});
-
+  {
+    timestamps: true,
+  }
+);
 
 (async () => {
   try {
