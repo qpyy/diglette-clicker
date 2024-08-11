@@ -29,7 +29,7 @@ $api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const { newAccessToken } = await refreshTokenService(refreshToken);
+        const newAccessToken = await refreshTokenService(refreshToken);
 
         setAccessToken(newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -38,6 +38,7 @@ $api.interceptors.response.use(
       } catch (refreshError) {
         logout();
         window.location.href = "/signin";
+
         return Promise.reject(refreshError);
       }
     }
