@@ -1,5 +1,6 @@
 const { validationAuthorization, validationRegistration } = require('../middleware/users-validation');
-const { registerUser, authUser, addCoin, logout, refresh, activate } = require('../controllers/controllers');
+const { registerUser, authUser, addCoin, logout, refresh, activateUser } = require('../controllers/controllers');
+const { middleware } = require('../middleware/auth-middleware');
 
 function router() {
   return {
@@ -40,6 +41,7 @@ function router() {
       method: 'POST',
       url: 'coin',
       handler: addCoin,
+      beforeHandler: middleware,
       schema: {
         body: {
           type: 'object',
@@ -59,11 +61,11 @@ function router() {
     activate: {
       method: 'GET',
       url: 'activate/:link',
-      handler: activate,
+      handler: activateUser,
     },
     refresh: {
       method: 'GET',
-      url: 'refresh',
+      url: 'auth/refresh',
       handler: refresh,
     }
   };
