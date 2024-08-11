@@ -44,7 +44,6 @@ a {
 body {
   display: flex;
   place-items: center;
-  min-width: 320px;
   min-height: 100vh;
 
   background: #d9a96c;
@@ -61,7 +60,6 @@ h1 {
   font-size: 3.2em;
   line-height: 1.1;
   font-family: "Rubik Moonrocks", sans-serif;
-  -webkit-text-stroke: 2px #553a2d;
 }
 
 button {

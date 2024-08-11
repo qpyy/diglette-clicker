@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useStore } from "../store/useStore";
-import { refreshAccessToken } from "../services";
+import { refreshTokenService } from "../services";
 
 const $api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -27,12 +27,12 @@ $api.interceptors.response.use(
 
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      try {
-        const data = await refreshAccessToken(refreshToken);
-        const { accessToken } = data;
 
-        setAccessToken(accessToken);
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+      try {
+        const { newAccessToken } = await refreshTokenService(refreshToken);
+
+        setAccessToken(newAccessToken);
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return $api(originalRequest);
       } catch (refreshError) {

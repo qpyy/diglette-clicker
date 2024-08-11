@@ -13,7 +13,7 @@ const StyledContainer = styled.div`
   }
 
   @media (max-width: 370px) {
-    width: 254px;
+    width: 270px;
   }
 `;
 
@@ -25,6 +25,10 @@ const StyledForm = styled.form`
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 420px) {
+    padding: 1rem;
+  }
 `;
 
 const StyledTitle = styled.h1`

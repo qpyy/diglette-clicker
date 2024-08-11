@@ -9,59 +9,13 @@ import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } f
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     email: "",
-    login: "",
+    username: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errorsMessage, setErrorsMessage] = useState({ email: "", username: "", password: "" });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { signUp, isLoading, error } = useSignUp();
   const navigate = useNavigate();
-
-  const validateForm = ({ email, password, login }) => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const loginPattern = /^[0-9A-Za-z]{6,16}$/;
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
-    const errors = {};
-    setErrors({});
-
-    if (!email.trim()) {
-      errors.email = "Email is required.";
-      setErrors(errors);
-      return errors;
-    }
-
-    if (!emailPattern.test(email)) {
-      errors.email = "Invalid email address.";
-      setErrors(errors);
-      return errors;
-    }
-
-    if (!login.trim()) {
-      errors.login = "Login is required.";
-      setErrors(errors);
-      return errors;
-    }
-
-    if (!loginPattern.test(login)) {
-      errors.login = "Login must be 6-16 characters long and contain only letters and numbers.";
-      setErrors(errors);
-      return errors;
-    }
-
-    if (!password.trim()) {
-      errors.password = "Password is required.";
-      setErrors(errors);
-      return errors;
-    }
-
-    if (!passwordPattern.test(password)) {
-      errors.password = "Password must be 6+ characters long and contain both letters and numbers.";
-      setErrors(errors);
-      return errors;
-    }
-
-    return errors;
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -72,12 +26,49 @@ const SignUpPage = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validateForm(formData);
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+  const validateForm = async (e) => {
+    e.preventDefault();
+    setErrorsMessage({ email: "", username: "", password: "" });
+    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
+    const { email, username, password } = formData;
+
+    if (!email.trim()) {
+      setErrorsMessage({ email: "Email is required." });
+      return;
+    }
+
+    if (!emailPattern.test(email)) {
+      setErrorsMessage({ email: "Invalid email address." });
+      return;
+    }
+
+    if (!username.trim()) {
+      setErrorsMessage({ username: "Login is required." });
+      return;
+    }
+
+    if (!usernamePattern.test(username)) {
+      setErrorsMessage({
+        username: "Login must be 6-16 characters long and contain only letters and numbers.",
+      });
+      return;
+    }
+
+    if (!password.trim()) {
+      setErrorsMessage({ password: "Password is required." });
+      return;
+    }
+
+    if (!passwordPattern.test(password)) {
+      setErrorsMessage({
+        password: "Password must be 6+ characters long and contain both letters and numbers.",
+      });
       return;
     }
 
@@ -89,37 +80,33 @@ const SignUpPage = () => {
     }
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
   return (
     <StyledContainer>
-      <StyledForm onSubmit={handleSubmit}>
+      <StyledForm onSubmit={validateForm}>
         <StyledTitle>Sign Up</StyledTitle>
         <CustomInput
           name="email"
           inputType="email"
           placeholderText="Your email..."
           handleChangeInput={handleChange}
-          value={formData.email}
-          errorMessage={errors.email}
+          errorMessage={errorsMessage.email}
+          autoCompleteValue="off"
         />
         <CustomInput
-          name="login"
+          name="username"
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
-          value={formData.login}
-          errorMessage={errors.login}
+          errorMessage={errorsMessage.username}
+          autoCompleteValue="username"
         />
         <CustomInput
           name="password"
           inputType="password"
           placeholderText="Your password..."
           handleChangeInput={handleChange}
-          value={formData.password}
-          errorMessage={errors.password}
+          errorMessage={errorsMessage.password}
+          autoCompleteValue="current-password"
         />
         <Button type="submit" disabled={isLoading}>
           {isLoading ? "Signing Up..." : "CREATE ACCOUNT"}

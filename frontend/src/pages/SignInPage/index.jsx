@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CustomLink from "../../components/UI/CustomLink";
 import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
 import { useLogIn } from "../../hooks/useLogin";
-import { Container, Form, Title, Button } from "./styles";
-import CustomLink from "../../components/UI/CustomLink";
-import { DividerText } from "./styles";
+import { Container, Form, Title, Button, DividerText } from "./styles";
 
 const SignInPage = () => {
   const [formData, setFormData] = useState({
-    login: "",
+    username: "",
     password: "",
   });
-  const [errors, setErrors] = useState({});
+  const [errorsMessage, setErrorsMessage] = useState({ username: "", password: "" });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { logIn, isLoading, error } = useLogIn();
   const navigate = useNavigate();
@@ -26,45 +25,38 @@ const SignInPage = () => {
     }));
   };
 
-  const validateForm = ({ login, password }) => {
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
-    const loginPattern = /^[0-9A-Za-z]{6,16}$/;
-    const errors = {};
-    setErrors({});
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
-    if (!login.trim()) {
-      errors.login = "Login is required.";
-      setErrors(errors);
-      return errors;
+  const validateForm = async (e) => {
+    e.preventDefault();
+    setErrorsMessage({ username: "", password: "" });
+    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
+    const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
+    const { username, password } = formData;
+
+    if (!username.trim()) {
+      setErrorsMessage({ username: "Login is required." });
+      return;
     }
 
-    if (!loginPattern.test(login)) {
-      errors.login = "Login must be 6-16 characters long and contain only letters and numbers.";
-      setErrors(errors);
-      return errors;
+    if (!usernamePattern.test(username)) {
+      setErrorsMessage({
+        username: "Login must be 6-16 characters long and contain only letters and numbers.",
+      });
+      return;
     }
 
     if (!password.trim()) {
-      errors.password = "Password is required.";
-      setErrors(errors);
-      return errors;
+      setErrorsMessage({ password: "Password is required." });
+      return;
     }
 
     if (!passwordPattern.test(password)) {
-      errors.password = "Password must be 6+ characters long and contain both letters and numbers.";
-      setErrors(errors);
-      return errors;
-    }
-
-    return errors;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = validateForm(formData);
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+      setErrorsMessage({
+        password: "Password must be 6+ characters long and contain both letters and numbers.",
+      });
       return;
     }
 
@@ -76,21 +68,16 @@ const SignInPage = () => {
     }
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
-
   return (
     <Container>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={validateForm}>
         <Title>Log In</Title>
         <CustomInput
-          name="login"
+          name="username"
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
-          value={formData.login}
-          errorMessage={errors.login}
+          errorMessage={errorsMessage.username}
           autoCompleteValue="username"
         />
         <CustomInput
@@ -98,8 +85,7 @@ const SignInPage = () => {
           inputType="password"
           placeholderText="Your password..."
           handleChangeInput={handleChange}
-          value={formData.password}
-          errorMessage={errors.password}
+          errorMessage={errorsMessage.password}
           autoCompleteValue="current-password"
         />
         <Button type="submit" disabled={isLoading}>

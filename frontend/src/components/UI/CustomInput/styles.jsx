@@ -37,6 +37,10 @@ const StyledError = styled.span`
   line-height: 0.99em;
   color: red;
   font-size: 0.875em;
+
+  @media (max-width: 380px) {
+    font-size: 0.8em;
+  }
 `;
 
 export { StyledError, StyledCustomInput, StyledContainer };

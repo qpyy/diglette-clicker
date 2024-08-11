@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Container, Wrapper, Diglet, DigletOverlay } from "./styles";
 import DigletImage from "../../assets/images/diglet.svg";
 import OverlayDigletImage from "../../assets/images/overlay-diglet.svg";
+import { Container, Wrapper, Diglet, DigletOverlay } from "./styles";
 
 const DigletAnimation = ({ incrementCount }) => {
   const [animate, setAnimate] = useState(false);
