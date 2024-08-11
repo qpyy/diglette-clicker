@@ -3,30 +3,27 @@ const {
   getUser,
   addCoinsToUserAccount,
 } = require("../services/services");
+const { activate, logoutUser, refreshFunc } = require("../services/user-service");
+const path = require("path");
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const registerUser = async (req, res) => {
   try {
     const resultRegistration = await createUser(req.body);
-    res.cookie('refreshToken', resultRegistration.data.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true })
+    res.cookie('refreshToken', resultRegistration.data.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
     res.status(201).send(resultRegistration.data);
   } catch (error) {
-    res.status(400).send(error);
+    res.status(error.status || 500).send({ error });
   }
 };
 
 const authUser = async (req, res) => {
   try {
     const resultAuth = await getUser(req.body);
-    res.header(
-      "Set-Cookie",
-      `auth_token=${resultAuth.token}; HttpOnly; Secure; Max-Age=3600`
-    );
-    res.status(201).send(resultAuth);
-
+    res.cookie('refreshToken', resultAuth.data.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.status(201).send(resultAuth.data);
   } catch (error) {
-    console.log('Произошла ошибка:', error.name, '-', error.message);
-    console.log('Трассировка стека:', error.stack);
-    res.status(400).send("Error authorization");
+    res.status(error.status || 500).send({ error });
   };
 };
 
@@ -36,33 +33,42 @@ const addCoin = async (req, res) => {
 
     res.status(201).send(resultAddToCoin);
   } catch (error) {
-    console.log('Произошла ошибка:', error.name, '-', error.message);
-    console.log('Трассировка стека:', error.stack);
-    res.status(400).send("Error authorization");
+    res.status(error.status || 500).send({ error });
   };
 };
 // Удаление refresh токена с базы данных
 const logout = async (req, res) => {
   try {
-
+    const { refreshToken } = req.cookies
+    const resultDeleteToken = await logoutUser(refreshToken);
+    res.clearCookie('refreshToken');
+    return resultDeleteToken;
   } catch (error) {
-
+    res.status(error.status || 500).send({ error });
   }
 }
+
 // Активация аккаунта
-const activate = async (req, res) => {
+const activateUser = async (req, res) => {
   try {
-
+    const activationLink = req.params.link;
+    await activate(activationLink);
+    return res.redirect(process.env.CLIENT_URL);
   } catch (error) {
-
+    console.error(error);
+    throw error;
   }
 }
-// Созадние refresh токена
+
+// Создание refresh токена
 const refresh = async (req, res) => {
   try {
-
+    const { refreshToken } = req.cookies
+    const resultRefreshToken = await refreshFunc(refreshToken);
+    res.clearCookie('refreshToken');
+    return resultRefreshToken;
   } catch (error) {
-
+    throw error;
   }
 }
 
@@ -72,6 +78,6 @@ module.exports = {
   authUser,
   addCoin,
   logout,
-  activate,
+  activateUser,
   refresh
 }

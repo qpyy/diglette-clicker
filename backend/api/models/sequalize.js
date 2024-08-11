@@ -39,7 +39,6 @@ const Users = sequelize.define(
     },
     coins: {
       type: DataTypes.INTEGER,
-      allowNull: true,
     },
   },
   {
