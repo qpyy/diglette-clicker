@@ -12,8 +12,8 @@ const logInService = async (loginData) => {
   return response.data;
 };
 
-const refreshTokenService = async (refreshToken) => {
-  const response = await $api.post(`/auth/refresh`, { refreshToken });
+const refreshTokenService = async () => {
+  const response = await $api.post(`/auth/refresh`);
 
   return response.data;
 };

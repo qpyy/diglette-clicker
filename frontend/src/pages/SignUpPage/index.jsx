@@ -9,10 +9,10 @@ import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } f
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     email: "",
-    username: "",
+    login: "",
     password: "",
   });
-  const [errorsMessage, setErrorsMessage] = useState({ email: "", username: "", password: "" });
+  const [errorsMessage, setErrorsMessage] = useState({ email: "", login: "", password: "" });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { signUp, isLoading, error } = useSignUp();
   const navigate = useNavigate();
@@ -32,11 +32,11 @@ const SignUpPage = () => {
 
   const validateForm = async (e) => {
     e.preventDefault();
-    setErrorsMessage({ email: "", username: "", password: "" });
+    setErrorsMessage({ email: "", login: "", password: "" });
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
-    const { email, username, password } = formData;
+    const { email, login, password } = formData;
 
     if (!email.trim()) {
       setErrorsMessage({ email: "Email is required." });
@@ -48,14 +48,14 @@ const SignUpPage = () => {
       return;
     }
 
-    if (!username.trim()) {
-      setErrorsMessage({ username: "Login is required." });
+    if (!login.trim()) {
+      setErrorsMessage({ login: "Login is required." });
       return;
     }
 
-    if (!usernamePattern.test(username)) {
+    if (!usernamePattern.test(login)) {
       setErrorsMessage({
-        username: "Login must be 6-16 characters long and contain only letters and numbers.",
+        login: "Login must be 6-16 characters long and contain only letters and numbers.",
       });
       return;
     }
@@ -73,6 +73,7 @@ const SignUpPage = () => {
     }
 
     try {
+      console.log(formData);
       await signUp(formData);
       navigate("/profile");
     } catch {
@@ -93,11 +94,11 @@ const SignUpPage = () => {
           autoCompleteValue="off"
         />
         <CustomInput
-          name="username"
+          name="login"
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.username}
+          errorMessage={errorsMessage.login}
           autoCompleteValue="username"
         />
         <CustomInput
