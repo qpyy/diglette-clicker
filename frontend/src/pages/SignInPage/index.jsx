@@ -1,20 +1,19 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import CustomLink from "../../components/UI/CustomLink";
 import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
-import CustomLink from "../../components/UI/CustomLink";
-import { useSignUp } from "../../hooks/useSignUp";
-import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } from "./styles";
+import { useLogIn } from "../../hooks/useLogin";
+import { Container, Form, Title, Button, DividerText } from "./styles";
 
-const SignUpPage = () => {
+const SignInPage = () => {
   const [formData, setFormData] = useState({
-    email: "",
     username: "",
     password: "",
   });
-  const [errorsMessage, setErrorsMessage] = useState({ email: "", username: "", password: "" });
+  const [errorsMessage, setErrorsMessage] = useState({ username: "", password: "" });
   const [openSnackbar, setOpenSnackbar] = useState(false);
-  const { signUp, isLoading, error } = useSignUp();
+  const { logIn, isLoading, error } = useLogIn();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -32,21 +31,10 @@ const SignUpPage = () => {
 
   const validateForm = async (e) => {
     e.preventDefault();
-    setErrorsMessage({ email: "", username: "", password: "" });
+    setErrorsMessage({ username: "", password: "" });
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
-    const { email, username, password } = formData;
-
-    if (!email.trim()) {
-      setErrorsMessage({ email: "Email is required." });
-      return;
-    }
-
-    if (!emailPattern.test(email)) {
-      setErrorsMessage({ email: "Invalid email address." });
-      return;
-    }
+    const { username, password } = formData;
 
     if (!username.trim()) {
       setErrorsMessage({ username: "Login is required." });
@@ -73,7 +61,7 @@ const SignUpPage = () => {
     }
 
     try {
-      await signUp(formData);
+      await logIn(formData);
       navigate("/profile");
     } catch {
       setOpenSnackbar(true);
@@ -81,17 +69,9 @@ const SignUpPage = () => {
   };
 
   return (
-    <StyledContainer>
-      <StyledForm onSubmit={validateForm}>
-        <StyledTitle>Sign Up</StyledTitle>
-        <CustomInput
-          name="email"
-          inputType="email"
-          placeholderText="Your email..."
-          handleChangeInput={handleChange}
-          errorMessage={errorsMessage.email}
-          autoCompleteValue="off"
-        />
+    <Container>
+      <Form onSubmit={validateForm}>
+        <Title>Log In</Title>
         <CustomInput
           name="username"
           inputType="text"
@@ -109,12 +89,12 @@ const SignUpPage = () => {
           autoCompleteValue="current-password"
         />
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Signing Up..." : "CREATE ACCOUNT"}
+          {isLoading ? "Loading..." : "Log In"}
         </Button>
 
-        <StyledDividerText>Already have an account?</StyledDividerText>
-        <CustomLink pathTo="/signin" linkText="SIGN IN" />
-      </StyledForm>
+        <DividerText>Don&apos;t have an account yet?</DividerText>
+        <CustomLink pathTo="/signup" linkText="SIGN UP" />
+      </Form>
 
       <CustomSnackbar
         open={openSnackbar}
@@ -122,8 +102,8 @@ const SignUpPage = () => {
         handleClose={handleCloseSnackbar}
         autoHideDuration={2000}
       />
-    </StyledContainer>
+    </Container>
   );
 };
 
-export default SignUpPage;
+export default SignInPage;
