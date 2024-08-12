@@ -36,9 +36,8 @@ const refreshFunc = async (refreshToken) => {
     }
 
     const userData = await validateRefreshToken(refreshToken);
-    const tokenFromDb = await findToken(refreshToken);
 
-    if (!userData || !tokenFromDb) {
+    if (!userData) {
       const error = new Error();
       error.status = 401;
       error.message = "Пользователь не авторизован";
@@ -47,14 +46,12 @@ const refreshFunc = async (refreshToken) => {
 
     const existingUser = await Users.findOne({ where: { id: userData.id } });
     const userDto = new UserDto(existingUser);
-    const tokens = await tokenService(userDto.toJSON());
-
-    await saveToken(userDto.toJSON().id, tokens.refreshToken);
+    const newAccessToken = await tokenService(userDto.toJSON());
 
     return {
       status: 200,
       data: {
-        ...tokens,
+        access_token: newAccessToken.accessToken,
         user: userDto
       }
     };

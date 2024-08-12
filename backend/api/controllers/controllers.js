@@ -61,14 +61,13 @@ const activateUser = async (req, res) => {
 }
 
 // Создание refresh токена
-const refresh = async (req, res) => {
+const refresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies
-    const resultRefreshToken = await refreshFunc(refreshToken);
-    res.clearCookie('refreshToken');
-    return resultRefreshToken;
+    const resultAccessToken = await refreshFunc(refreshToken);
+    return resultAccessToken;
   } catch (error) {
-    throw error;
+    next(e);
   }
 }
 
