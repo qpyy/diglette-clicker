@@ -39,7 +39,7 @@ function router() {
     },
     takeCoin: {
       method: 'POST',
-      url: 'coin',
+      url: 'user/coins/add',
       handler: addCoin,
       beforeHandler: middleware,
       schema: {

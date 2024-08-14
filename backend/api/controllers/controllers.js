@@ -67,7 +67,7 @@ const refresh = async (req, res, next) => {
     const resultAccessToken = await refreshFunc(refreshToken);
     return resultAccessToken;
   } catch (error) {
-    next(e);
+    next(error);
   }
 }
 

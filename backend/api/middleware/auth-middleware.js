@@ -6,7 +6,7 @@ module.exports = function (req, res, next) {
     if (!authorizationHeader) {
       const error = new Error();
       error.status = 401;
-      error.message = "Пользователь не авторизован";
+      error.message = "Отсутствует заголовок авторизации";
       throw error;
     }
 
@@ -14,7 +14,7 @@ module.exports = function (req, res, next) {
     if (!accessToken) {
       const error = new Error();
       error.status = 401;
-      error.message = "Пользователь не авторизован";
+      error.message = "Отсутствует access token";
       throw error;
     }
 
@@ -23,7 +23,7 @@ module.exports = function (req, res, next) {
     if (!userData) {
       const error = new Error();
       error.status = 401;
-      error.message = "Пользователь не авторизован";
+      error.message = "Недействительный access token";
       throw error;
     }
 
@@ -31,8 +31,8 @@ module.exports = function (req, res, next) {
     next();
   } catch (e) {
     const error = new Error();
-    error.status = 401;
-    error.message = "Пользователь не авторизован";
+    error.status = 500;
+    error.message = "Произошла ошибка, сервис временно недоступен";
     throw error;
   }
 };
