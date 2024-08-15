@@ -12,9 +12,10 @@ fastify.register(cookiePlugin, {
 
 fastify.register(require("@fastify/cors"), {
   // Настройки CORS
-  origin: "*",
+  origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["content-type", "Authorization"],
+  credentials: true,
 });
 
 const connectServer = async () => {

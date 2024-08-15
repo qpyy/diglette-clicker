@@ -7,12 +7,18 @@ import { useSignUp } from "../../hooks/useSignUp";
 import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } from "./styles";
 
 const SignUpPage = () => {
-  const [formData, setFormData] = useState({
+  const [newUser, setNewUser] = useState({
     email: "",
     login: "",
     password: "",
+    repeatPassword: "",
   });
-  const [errorsMessage, setErrorsMessage] = useState({ email: "", login: "", password: "" });
+  const [errorsMessage, setErrorsMessage] = useState({
+    email: "",
+    login: "",
+    password: "",
+    repeatPassword: "",
+  });
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { signUp, isLoading, error } = useSignUp();
   const navigate = useNavigate();
@@ -20,7 +26,7 @@ const SignUpPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
+    setNewUser((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -36,7 +42,7 @@ const SignUpPage = () => {
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
-    const { email, login, password } = formData;
+    const { email, login, password, repeatPassword } = newUser;
 
     if (!email.trim()) {
       setErrorsMessage({ email: "Email is required." });
@@ -72,9 +78,15 @@ const SignUpPage = () => {
       return;
     }
 
+    if (password !== repeatPassword) {
+      setErrorsMessage({
+        repeatPassword: "Passwords are different.",
+      });
+      return;
+    }
+
     try {
-      console.log(formData);
-      await signUp(formData);
+      await signUp({ email, login, password });
       navigate("/profile");
     } catch {
       setOpenSnackbar(true);
@@ -108,6 +120,14 @@ const SignUpPage = () => {
           handleChangeInput={handleChange}
           errorMessage={errorsMessage.password}
           autoCompleteValue="current-password"
+        />
+        <CustomInput
+          name="repeatPassword"
+          inputType="password"
+          placeholderText="Repeat your password..."
+          handleChangeInput={handleChange}
+          errorMessage={errorsMessage.repeatPassword}
+          autoCompleteValue="off"
         />
         <Button type="submit" disabled={isLoading}>
           {isLoading ? "Signing Up..." : "CREATE ACCOUNT"}

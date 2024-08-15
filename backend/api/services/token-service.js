@@ -1,14 +1,14 @@
-const jwt = require('jsonwebtoken');
-const path = require('path');
+const jwt = require("jsonwebtoken");
+const path = require("path");
 const { TokenSchema } = require("../models/sequalize");
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const tokenService = async (payload) => {
-  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: "2m" });
-  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: "30m" });
+  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: "2h" });
+  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
   return {
     accessToken,
-    refreshToken
+    refreshToken,
   };
 };
 
@@ -17,7 +17,7 @@ const saveToken = async (userId, refreshToken) => {
   if (tokenData) {
     TokenSchema.refreshToken = refreshToken;
     return tokenData.save();
-  };
+  }
   const token = await TokenSchema.create({ userId: userId, refreshToken });
   return token;
 };
@@ -25,8 +25,8 @@ const saveToken = async (userId, refreshToken) => {
 const removeToken = async (refreshToken) => {
   const tokenData = await TokenSchema.destroy({
     where: {
-      refreshToken
-    }
+      refreshToken,
+    },
   });
 
   if (tokenData === 1) return refreshToken;
@@ -35,24 +35,33 @@ const removeToken = async (refreshToken) => {
 const validateAccessToken = (token) => {
   try {
     const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+
     return userData;
   } catch (error) {
     return null;
   }
-}
+};
 
 const validateRefreshToken = async (token) => {
   try {
     const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
     return userData;
   } catch (error) {
     return null;
   }
-}
+};
 
 const findToken = async (refreshToken) => {
   const tokenData = await TokenSchema.findOne({ refreshToken });
   return tokenData;
-}
+};
 
-module.exports = { tokenService, saveToken, removeToken, validateAccessToken, validateRefreshToken, findToken };
+module.exports = {
+  tokenService,
+  saveToken,
+  removeToken,
+  validateAccessToken,
+  validateRefreshToken,
+  findToken,
+};
