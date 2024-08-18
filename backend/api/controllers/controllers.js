@@ -8,7 +8,7 @@ const {
   logoutUser,
   refreshFunc
 } = require("../services/user-service");
-const { AuthenticationError, BadRequestError } = require("../middleware/error-handler");
+const { InternalServerError } = require("../middleware/error-handler");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
@@ -74,10 +74,7 @@ const activateUser = async (req, res) => {
 
 const refresh = async (req, res, next) => {
   try {
-    const data = req.cookies;
-    console.log("data", data);
     const { refreshToken } = req.cookies;
-    console.log("refreshToken", refreshToken);
     const resultAccessToken = await refreshFunc(refreshToken);
     return resultAccessToken;
   } catch (error) {

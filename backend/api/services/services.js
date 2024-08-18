@@ -14,14 +14,6 @@ const getUser = async (body) => {
 
   const existingUser = await Users.findOne({ where: { login } });
 
-  // if (!existingUser) {
-  //   const error = new Error();
-  //   error.status = 403;
-  //   error.message = "Неправильный логин или пароль";
-  //   throw error;
-  // }
-
-
   if (!existingUser) {
     throw new AuthorizationError('Неправильный логин или пароль', 403);
   }
@@ -57,13 +49,6 @@ const createUser = async (body) => {
       ]
     }
   });
-
-  // if (existingUser !== null) {
-  //   const error = new Error();
-  //   error.status = 409;
-  //   error.message = "Пользователь с таким логином или почтой уже зарегистрирован";
-  //   throw error;
-  // }
 
   if (existingUser !== null) {
     throw new BadRequestError('Пользователь с таким логином или почтой уже зарегистрирован', 400);

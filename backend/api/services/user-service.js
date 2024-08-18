@@ -2,9 +2,7 @@ const { Users } = require("../models/sequalize");
 const {
   removeToken,
   validateRefreshToken,
-  findToken,
   tokenService,
-  saveToken
 } = require("./token-service");
 const UserDto = require("../dtos/user-dto");
 const { AuthenticationError, InternalServerError } = require("../middleware/error-handler");
