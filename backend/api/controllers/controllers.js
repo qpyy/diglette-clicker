@@ -3,7 +3,12 @@ const {
   getUser,
   addCoinsToUserAccount,
 } = require("../services/services");
-const { activate, logoutUser, refreshFunc } = require("../services/user-service");
+const {
+  activate,
+  logoutUser,
+  refreshFunc
+} = require("../services/user-service");
+const { AuthenticationError, BadRequestError } = require("../middleware/error-handler");
 const path = require("path");
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
@@ -23,7 +28,13 @@ const authUser = async (req, res) => {
     res.cookie('refreshToken', resultAuth.data.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
     res.status(201).send(resultAuth.data);
   } catch (error) {
-    res.status(error.status || 500).send({ error });
+    if (error instanceof AuthenticationError) {
+      res.status(error.status).send({ error: "Неверный логин или пароль" });
+    } else if (error instanceof BadRequestError) {
+      res.status(error.status).send({ error: "Запрос был неправильно составлен" });
+    } else {
+      res.status(error.status || 500).send({ error: error.message });
+    }
   };
 };
 
@@ -36,6 +47,7 @@ const addCoin = async (req, res) => {
     res.status(error.status || 500).send({ error });
   };
 };
+
 // Удаление refresh токена с базы данных
 const logout = async (req, res) => {
   try {
@@ -70,7 +82,6 @@ const refresh = async (req, res, next) => {
     next(error);
   }
 }
-
 
 module.exports = {
   registerUser,

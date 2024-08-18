@@ -1,5 +1,15 @@
-const { validationAuthorization, validationRegistration } = require('../middleware/users-validation');
-const { registerUser, authUser, addCoin, logout, refresh, activateUser } = require('../controllers/controllers');
+const {
+  validationAuthorization,
+  validationRegistration
+} = require('../middleware/users-validation');
+const {
+  registerUser,
+  authUser,
+  addCoin,
+  logout,
+  refresh,
+  activateUser
+} = require('../controllers/controllers');
 const { middleware } = require('../middleware/auth-middleware');
 
 function router() {

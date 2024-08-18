@@ -4,7 +4,8 @@ const { Op } = require('sequelize');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { mailService } = require('./mail-service');
-const { tokenService, saveToken } = require('./token-service');
+const { tokenService, saveToken } = require("./token-service");
+const { AuthorizationError, BadRequestError } = require("../middleware/error-handler");
 const UserDto = require("../dtos/user-dto");
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
@@ -13,20 +14,22 @@ const getUser = async (body) => {
 
   const existingUser = await Users.findOne({ where: { login } });
 
+  // if (!existingUser) {
+  //   const error = new Error();
+  //   error.status = 403;
+  //   error.message = "Неправильный логин или пароль";
+  //   throw error;
+  // }
+
+
   if (!existingUser) {
-    const error = new Error();
-    error.status = 403;
-    error.message = "Неправильный логин или пароль";
-    throw error;
+    throw new AuthorizationError('Неправильный логин или пароль', 403);
   }
 
   const isPasswordValid = await bcrypt.compare(password, existingUser.password);
 
   if (!isPasswordValid) {
-    const error = new Error();
-    error.status = 403;
-    error.message = "Неправильный логин или пароль";
-    throw error;
+    throw new AuthorizationError('Неправильный логин или пароль', 403);
   };
 
   const userDto = new UserDto(existingUser);
@@ -55,11 +58,15 @@ const createUser = async (body) => {
     }
   });
 
+  // if (existingUser !== null) {
+  //   const error = new Error();
+  //   error.status = 409;
+  //   error.message = "Пользователь с таким логином или почтой уже зарегистрирован";
+  //   throw error;
+  // }
+
   if (existingUser !== null) {
-    const error = new Error();
-    error.status = 409;
-    error.message = "Пользователь с таким логином или почтой уже зарегистрирован";
-    throw error;
+    throw new BadRequestError('Пользователь с таким логином или почтой уже зарегистрирован', 400);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -96,11 +103,7 @@ const addCoinsToUserAccount = async (body) => {
   const existingUser = await Users.findOne({ where: { login } });
 
   if (!existingUser) {
-    throw new Error(`Пользователь со следующим логином ${login} не найден`);
-  }
-
-  if (coin <= 0) {
-    throw new Error('Количество монет должно быть положительным числом');
+    throw new BadRequestError(`Пользователь со следующим логином ${login} не найден`, 400);
   }
 
   existingUser.coins += coin;

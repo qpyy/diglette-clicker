@@ -1,6 +1,7 @@
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const nodemailer = require('nodemailer');
+const { SendMailError } = require("../middleware/error-handler");
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -28,10 +29,13 @@ const mailService = async (to, link) => {
         </div>
       `
     });
-    return { message: 'Email sent successfully' };
+    return {
+      message: 'Email sent successfully',
+      status: 200
+    };
   } catch (err) {
     console.error('Error sending email:', err);
-    throw new Error(`Error sending email: ${err.message}`);
+    throw new SendMailError(`Error sending email`, 500);
   }
 };
 
