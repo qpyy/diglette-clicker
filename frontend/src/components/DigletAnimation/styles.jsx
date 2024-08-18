@@ -38,6 +38,10 @@ const moveUpAndDownSmall = keyframes`
 
 const Container = styled.div`
   padding-bottom: 35%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   @media (max-width: 460px) {
     width: 70%;

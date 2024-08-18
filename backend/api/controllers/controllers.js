@@ -10,12 +10,15 @@ const {
 } = require("../services/user-service");
 const { AuthenticationError, BadRequestError } = require("../middleware/error-handler");
 const path = require("path");
-require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const registerUser = async (req, res) => {
   try {
     const resultRegistration = await createUser(req.body);
-    res.cookie('refreshToken', resultRegistration.data.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.cookie("refreshToken", resultRegistration.data.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
     res.status(201).send(resultRegistration.data);
   } catch (error) {
     res.status(error.status || 500).send({ error });
@@ -25,17 +28,14 @@ const registerUser = async (req, res) => {
 const authUser = async (req, res) => {
   try {
     const resultAuth = await getUser(req.body);
-    res.cookie('refreshToken', resultAuth.data.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.cookie("refreshToken", resultAuth.data.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
     res.status(201).send(resultAuth.data);
   } catch (error) {
-    if (error instanceof AuthenticationError) {
-      res.status(error.status).send({ error: "Неверный логин или пароль" });
-    } else if (error instanceof BadRequestError) {
-      res.status(error.status).send({ error: "Запрос был неправильно составлен" });
-    } else {
-      res.status(error.status || 500).send({ error: error.message });
-    }
-  };
+    res.status(error.status || 500).send({ error });
+  }
 };
 
 const addCoin = async (req, res) => {
@@ -45,20 +45,20 @@ const addCoin = async (req, res) => {
     res.status(201).send(resultAddToCoin);
   } catch (error) {
     res.status(error.status || 500).send({ error });
-  };
+  }
 };
 
 // Удаление refresh токена с базы данных
 const logout = async (req, res) => {
   try {
-    const { refreshToken } = req.cookies
+    const { refreshToken } = req.cookies;
     const resultDeleteToken = await logoutUser(refreshToken);
-    res.clearCookie('refreshToken');
+    res.clearCookie("refreshToken");
     return resultDeleteToken;
   } catch (error) {
     res.status(error.status || 500).send({ error });
   }
-}
+};
 
 // Активация аккаунта
 const activateUser = async (req, res) => {
@@ -70,16 +70,18 @@ const activateUser = async (req, res) => {
     console.error(error);
     throw error;
   }
-}
+};
 
-// Создание refresh токена
 const refresh = async (req, res, next) => {
   try {
-    const { refreshToken } = req.cookies
+    const data = req.cookies;
+    console.log("data", data);
+    const { refreshToken } = req.cookies;
+    console.log("refreshToken", refreshToken);
     const resultAccessToken = await refreshFunc(refreshToken);
     return resultAccessToken;
   } catch (error) {
-    next(error);
+    res.status(error.status || 500).send({ error });
   }
 }
 
@@ -89,5 +91,5 @@ module.exports = {
   addCoin,
   logout,
   activateUser,
-  refresh
-}
+  refresh,
+};

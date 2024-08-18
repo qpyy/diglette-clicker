@@ -1,17 +1,17 @@
-import { useState } from "react";
 import DigletAnimation from "../../components/DigletAnimation";
 import { Container } from "./styles";
+import { useCoins } from "../../hooks/useCoins";
 
 const Profile = () => {
-  const [count, setCount] = useState(0);
+  const { coins, addCoins } = useCoins();
 
   const incrementCount = () => {
-    setCount((count) => count + 1);
+    addCoins(10);
   };
 
   return (
     <Container>
-      <h1>{count}</h1>
+      <h1>{coins}</h1>
       <DigletAnimation incrementCount={incrementCount} />
     </Container>
   );

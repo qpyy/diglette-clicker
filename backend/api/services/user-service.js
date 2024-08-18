@@ -1,4 +1,3 @@
-// const { refresh } = require('../controllers/controllers');
 const { Users } = require("../models/sequalize");
 const {
   removeToken,
@@ -15,8 +14,8 @@ const activate = async (activationLink) => {
   try {
     const user = await Users.findOne({
       where: {
-        activationLink: activationLink
-      }
+        activationLink: activationLink,
+      },
     });
     user.isActivated = true;
     await user.save();
@@ -24,7 +23,7 @@ const activate = async (activationLink) => {
     console.log(error);
     throw new InternalServerError("INTERNAL_SERVER_ERROR", 500);
   }
-}
+};
 
 const logoutUser = async (refreshToken) => {
   try {
@@ -34,19 +33,18 @@ const logoutUser = async (refreshToken) => {
     console.log(error);
     throw new InternalServerError("INTERNAL_SERVER_ERROR", 500);
   }
-}
+};
 
 const refreshFunc = async (refreshToken) => {
   try {
 
     if (!refreshToken) {
-      throw new AuthenticationError("Пользователь не авторизован", 401);
+      throw new AuthenticationError("Refresh token unavailable", 403);
     }
-
     const userData = await validateRefreshToken(refreshToken);
 
     if (!userData) {
-      throw new AuthenticationError("Пользователь не авторизован", 401);
+      throw new AuthenticationError("Refresh token expired", 403);
     }
 
     const existingUser = await Users.findOne({ where: { id: userData.id } });
@@ -54,18 +52,13 @@ const refreshFunc = async (refreshToken) => {
     const newAccessToken = await tokenService(userDto.toJSON());
 
     return {
-      status: 200,
-      data: {
-        access_token: newAccessToken.accessToken,
-        user: userDto
-      }
+      accessToken: newAccessToken.accessToken,
+      user: userDto,
     };
   } catch (err) {
     console.log(err);
     throw new InternalServerError("INTERNAL_SERVER_ERROR", 500);
   }
 };
-
-
 
 module.exports = { activate, logoutUser, refreshFunc };

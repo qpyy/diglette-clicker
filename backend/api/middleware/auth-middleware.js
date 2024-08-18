@@ -1,4 +1,4 @@
-const { validateAccessToken } = require('../services/token-service');
+const { validateAccessToken } = require("../services/token-service");
 
 module.exports = function (req, res, next) {
   try {
@@ -10,7 +10,7 @@ module.exports = function (req, res, next) {
       throw error;
     }
 
-    const accessToken = authorizationHeader.split(' ')[1];
+    const accessToken = authorizationHeader.split(" ")[1];
     if (!accessToken) {
       const error = new Error();
       error.status = 401;
@@ -30,9 +30,6 @@ module.exports = function (req, res, next) {
     req.user = userData;
     next();
   } catch (e) {
-    const error = new Error();
-    error.status = 500;
-    error.message = "Произошла ошибка, сервис временно недоступен";
-    throw error;
+    next(e);
   }
 };

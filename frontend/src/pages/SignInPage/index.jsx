@@ -7,8 +7,8 @@ import { useLogIn } from "../../hooks/useLogin";
 import { Container, Form, Title, Button, DividerText } from "./styles";
 
 const SignInPage = () => {
-  const [formData, setFormData] = useState({
-    username: "",
+  const [user, setUser] = useState({
+    login: "",
     password: "",
   });
   const [errorsMessage, setErrorsMessage] = useState({ username: "", password: "" });
@@ -19,7 +19,7 @@ const SignInPage = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData((prev) => ({
+    setUser((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -34,14 +34,14 @@ const SignInPage = () => {
     setErrorsMessage({ username: "", password: "" });
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
     const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
-    const { username, password } = formData;
+    const { login, password } = user;
 
-    if (!username.trim()) {
+    if (!login.trim()) {
       setErrorsMessage({ username: "Login is required." });
       return;
     }
 
-    if (!usernamePattern.test(username)) {
+    if (!usernamePattern.test(login)) {
       setErrorsMessage({
         username: "Login must be 6-16 characters long and contain only letters and numbers.",
       });
@@ -61,7 +61,7 @@ const SignInPage = () => {
     }
 
     try {
-      await logIn(formData);
+      await logIn(user);
       navigate("/profile");
     } catch {
       setOpenSnackbar(true);
@@ -73,7 +73,7 @@ const SignInPage = () => {
       <Form onSubmit={validateForm}>
         <Title>Log In</Title>
         <CustomInput
-          name="username"
+          name="login"
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
