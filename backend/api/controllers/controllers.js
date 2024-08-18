@@ -1,5 +1,14 @@
-const { createUser, getUser, addCoinsToUserAccount } = require("../services/services");
-const { activate, logoutUser, refreshFunc } = require("../services/user-service");
+const {
+  createUser,
+  getUser,
+  addCoinsToUserAccount,
+} = require("../services/services");
+const {
+  activate,
+  logoutUser,
+  refreshFunc
+} = require("../services/user-service");
+const { InternalServerError } = require("../middleware/error-handler");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
@@ -38,6 +47,7 @@ const addCoin = async (req, res) => {
     res.status(error.status || 500).send({ error });
   }
 };
+
 // Удаление refresh токена с базы данных
 const logout = async (req, res) => {
   try {
@@ -64,16 +74,13 @@ const activateUser = async (req, res) => {
 
 const refresh = async (req, res, next) => {
   try {
-    const data = req.cookies;
-    console.log("data", data);
     const { refreshToken } = req.cookies;
-    console.log("refreshToken", refreshToken);
     const resultAccessToken = await refreshFunc(refreshToken);
     return resultAccessToken;
   } catch (error) {
     res.status(error.status || 500).send({ error });
   }
-};
+}
 
 module.exports = {
   registerUser,

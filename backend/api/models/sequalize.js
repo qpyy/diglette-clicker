@@ -1,4 +1,8 @@
-const { Sequelize, DataTypes, BOOLEAN } = require("sequelize");
+const {
+  Sequelize,
+  DataTypes,
+  BOOLEAN
+} = require("sequelize");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 

@@ -19,7 +19,7 @@ module.exports = function (req, res, next) {
     }
 
     const userData = validateAccessToken(accessToken);
-
+    console.log(userData);
     if (!userData) {
       const error = new Error();
       error.status = 401;
