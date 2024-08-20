@@ -3,10 +3,9 @@ import { useStore } from "../store/useStore";
 import { signUpService } from "../services";
 
 export const useSignUp = () => {
-  const { setUser, setAccessToken, setRefreshToken } = useStore((state) => ({
+  const { setUser, setAccessToken } = useStore((state) => ({
     setUser: state.setUser,
     setAccessToken: state.setAccessToken,
-    setRefreshToken: state.setRefreshToken,
   }));
 
   const signUpMutation = useMutation({
@@ -14,7 +13,6 @@ export const useSignUp = () => {
     onSuccess: (data) => {
       setUser(data.user);
       setAccessToken(data.accessToken);
-      setRefreshToken(data.refreshToken);
     },
   });
 

@@ -4,8 +4,8 @@ const { TokenSchema } = require("../models/sequalize");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
 const tokenService = async (payload) => {
-  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: "2h" });
-  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
+  const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: "30s" });
+  const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: "2m" });
   return {
     accessToken,
     refreshToken,

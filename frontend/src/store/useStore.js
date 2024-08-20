@@ -8,9 +8,6 @@ export const useStore = create((set) => ({
     localStorage.setItem("accessToken", accessToken);
     set({ accessToken });
   },
-  setRefreshToken: (refreshToken) => {
-    set({ refreshToken });
-  },
   logout: () => {
     localStorage.removeItem("accessToken");
     set({ user: {}, accessToken: "", refreshToken: "" });

@@ -1,13 +1,5 @@
-const {
-  createUser,
-  getUser,
-  addCoinsToUserAccount,
-} = require("../services/services");
-const {
-  activate,
-  logoutUser,
-  refreshFunc
-} = require("../services/user-service");
+const { createUser, getUser, addCoinsToUserAccount } = require("../services/services");
+const { activate, logoutUser, refreshFunc } = require("../services/user-service");
 const { InternalServerError } = require("../middleware/error-handler");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
@@ -78,9 +70,9 @@ const refresh = async (req, res, next) => {
     const resultAccessToken = await refreshFunc(refreshToken);
     return resultAccessToken;
   } catch (error) {
-    res.status(error.status || 500).send({ error });
+    res.status(error.status || 500).send({ message: error.message });
   }
-}
+};
 
 module.exports = {
   registerUser,
