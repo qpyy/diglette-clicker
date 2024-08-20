@@ -44,6 +44,10 @@ const Users = sequelize.define(
     coins: {
       type: DataTypes.INTEGER,
     },
+    level: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    }
   },
   {
     timestamps: true,
@@ -81,8 +85,8 @@ const TokenSchema = sequelize.define(
 
 (async () => {
   try {
-    await Users.sync({ force: false }); // Синхронизируем модель users, если в базе данных не создана модель, написать true, после выполнения сразу написать false
-    await TokenSchema.sync({ force: false });
+    await Users.sync({ force: true }); // Синхронизируем модель users, если в базе данных не создана модель, написать true, после выполнения сразу написать false
+    await TokenSchema.sync({ force: true });
     await sequelize.authenticate();
     console.log("Соединение с БД было успешно установлено");
   } catch (e) {

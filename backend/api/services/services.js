@@ -67,7 +67,8 @@ const createUser = async (body) => {
     login,
     password: hashedPassword,
     activationLink,
-    coins: 0
+    coins: 0,
+    level: 0
   });
 
   await mailService(email, `${process.env.API_URL}/activate/${activationLink}`);
