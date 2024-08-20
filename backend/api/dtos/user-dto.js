@@ -4,6 +4,7 @@ class UserDto {
   login;
   coins;
   isActivated;
+  level;
 
   constructor(model) {
     this.id = model.id;
@@ -11,6 +12,7 @@ class UserDto {
     this.login = model.login;
     this.coins = model.coins;
     this.isActivated = model.isActivated;
+    this.level = model.level;
   }
 
   toJSON() {
@@ -19,7 +21,8 @@ class UserDto {
       email: this.email,
       login: this.login,
       coins: this.coins,
-      isActivated: this.isActivated
+      isActivated: this.isActivated,
+      level: this.level,
     }
 
   }

@@ -32,6 +32,7 @@ fastify.register(
     instance.route(router().registration);
     instance.route(router().authorization);
     instance.route(router().refresh);
+    instance.route(router().activate);
     done();
   },
   { prefix: "/" }
@@ -42,7 +43,6 @@ fastify.register(
   (instance, opts, done) => {
     instance.addHook("preHandler", authMiddleware);
     instance.route(router().takeCoin);
-    instance.route(router().activate);
     instance.route(router().logout);
     done();
   },
