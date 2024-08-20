@@ -13,6 +13,12 @@ class AuthenticationError extends CustomError {
   };
 };
 
+class VerifyError extends CustomError {
+  constructor(message, code = 'VERIFY_ERROR') {
+    return super(message, 402, code);
+  };
+};
+
 class AuthorizationError extends CustomError {
   constructor(message, code = 'AUTHORIZATION_ERROR') {
     return super(message, 403, code);
@@ -70,5 +76,6 @@ module.exports = {
   BadRequestError,
   UnprocessableEntityError,
   ForbiddenError,
-  SendMailError
+  SendMailError,
+  VerifyError
 };

@@ -5,7 +5,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { mailService } = require('./mail-service');
 const { tokenService, saveToken } = require("./token-service");
-const { AuthorizationError, BadRequestError } = require("../middleware/error-handler");
+const { AuthorizationError, BadRequestError, VerifyError } = require("../middleware/error-handler");
 const UserDto = require("../dtos/user-dto");
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
@@ -25,6 +25,11 @@ const getUser = async (body) => {
   };
 
   const userDto = new UserDto(existingUser);
+
+  if (!userDto.isActivated) {
+    throw new VerifyError('Почта не прошла верификацию, активируйте свой профиль перейдя по ссылке отправленной вам на почту', 402);
+  }
+
   const tokens = await tokenService(userDto.toJSON());
 
   await saveToken(userDto.toJSON().id, tokens.refreshToken);
