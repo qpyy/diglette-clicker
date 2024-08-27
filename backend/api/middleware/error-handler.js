@@ -6,24 +6,30 @@ class CustomError extends Error {
     this.name = this.constructor.name;
   }
 }
-
-class AuthenticationError extends CustomError {
+class AccessTokenError extends CustomError {
+  constructor(message = "Authorization failed", code = "AUTHORIZATION_ERROR") {
+    super(message, 403.7, code);
+  }
+}
+class RefreshTokenError extends CustomError {
   constructor(message = "Authentication failed", code = "AUTHENTICATION_ERROR") {
-    super(message, 401, code);
+    super(message, 403.13, code);
   }
 }
 
+// Ошибка верификации почты
 class VerifyError extends CustomError {
   constructor(message = "Verification failed", code = "VERIFY_ERROR") {
-    super(message, 402, code);
+    super(message, 401.2, code);
+  }
+}
+// Ошибка авторизации пользователя
+class AuthorizationError extends CustomError {
+  constructor(message = "Authorization failed", code = "AUTHORIZATION_ERROR") {
+    super(message, 401.1, code);
   }
 }
 
-class AuthorizationError extends CustomError {
-  constructor(message = "Authorization failed", code = "AUTHORIZATION_ERROR") {
-    super(message, 403, code);
-  }
-}
 
 class ValidationError extends CustomError {
   constructor(message = "Validation error", code = "VALIDATION_ERROR") {
@@ -68,7 +74,7 @@ class ForbiddenError extends CustomError {
 }
 
 module.exports = {
-  AuthenticationError,
+  RefreshTokenError,
   AuthorizationError,
   ValidationError,
   NotFoundError,
@@ -78,4 +84,5 @@ module.exports = {
   ForbiddenError,
   SendMailError,
   VerifyError,
+  AccessTokenError
 };

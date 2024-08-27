@@ -1,35 +1,32 @@
 const { validateAccessToken } = require("../services/token-service");
+const { AccessTokenError } = require("./error-handler");
 
 module.exports = function (req, res, next) {
   try {
     const authorizationHeader = req.headers.authorization;
+    console.log("1");
+
     if (!authorizationHeader) {
-      const error = new Error();
-      error.status = 401;
-      error.message = "Отсутствует заголовок авторизации";
-      throw error;
+      throw new AccessTokenError("Отсутствует заголовок авторизации");
     }
+    console.log("2");
 
     const accessToken = authorizationHeader.split(" ")[1];
     if (!accessToken) {
-      const error = new Error();
-      error.status = 401;
-      error.message = "Отсутствует access token";
-      throw error;
+      throw new AccessTokenError("Отсутствует access token");
     }
+    console.log("3");
 
     const userData = validateAccessToken(accessToken);
-    console.log(userData);
     if (!userData) {
-      const error = new Error();
-      error.status = 401;
-      error.message = "Недействительный access token";
-      throw error;
+      throw new AccessTokenError("Недействительный access token");
     }
 
+    console.log("4");
     req.user = userData;
-    next();
-  } catch (e) {
-    next(e);
+    next(); // Вызываем функцию next(), чтобы middleware мог продолжить выполнение
+  } catch (err) {
+    console.log("Ошибка access", err);
+    next(err); // Передаем ошибку в next middleware
   }
 };

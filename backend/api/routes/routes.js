@@ -51,7 +51,6 @@ function router() {
       method: 'POST',
       url: 'user/coins/add',
       handler: addCoin,
-      beforeHandler: middleware,
       schema: {
         body: {
           type: 'object',

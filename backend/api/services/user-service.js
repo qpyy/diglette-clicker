@@ -1,7 +1,7 @@
 const { Users } = require("../models/sequalize");
 const { removeToken, validateRefreshToken, tokenService } = require("./token-service");
 const UserDto = require("../dtos/user-dto");
-const { AuthenticationError, InternalServerError } = require("../middleware/error-handler");
+const { RefreshTokenError, InternalServerError } = require("../middleware/error-handler");
 
 const activate = async (activationLink) => {
   try {
@@ -31,12 +31,12 @@ const logoutUser = async (refreshToken) => {
 const refreshFunc = async (refreshToken) => {
   try {
     if (!refreshToken) {
-      throw new AuthenticationError("Refresh token unavailable", 403);
+      throw new RefreshTokenError("Refresh token unavailable");
     }
     const userData = await validateRefreshToken(refreshToken);
 
     if (!userData) {
-      throw new AuthenticationError("Refresh token expired", 403);
+      throw new RefreshTokenError("Refresh token expired");
     }
 
     const existingUser = await Users.findOne({ where: { id: userData.id } });
