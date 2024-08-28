@@ -23,7 +23,6 @@ const logoutUser = async (refreshToken) => {
     const token = await removeToken(refreshToken);
     return token;
   } catch (error) {
-    console.log(error);
     throw new InternalServerError("INTERNAL_SERVER_ERROR", 500);
   }
 };

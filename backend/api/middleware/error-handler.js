@@ -1,16 +1,17 @@
-class CustomError extends Error {
+class CustomError {
   constructor(message, status, code) {
-    super(message);
+    this.message = message;
     this.status = status;
     this.code = code;
-    this.name = this.constructor.name;
   }
 }
+
 class AccessTokenError extends CustomError {
   constructor(message = "Authorization failed", code = "AUTHORIZATION_ERROR") {
     super(message, 403.7, code);
   }
 }
+
 class RefreshTokenError extends CustomError {
   constructor(message = "Authentication failed", code = "AUTHENTICATION_ERROR") {
     super(message, 403.13, code);
@@ -23,13 +24,13 @@ class VerifyError extends CustomError {
     super(message, 401.2, code);
   }
 }
+
 // Ошибка авторизации пользователя
 class AuthorizationError extends CustomError {
   constructor(message = "Authorization failed", code = "AUTHORIZATION_ERROR") {
     super(message, 401.1, code);
   }
 }
-
 
 class ValidationError extends CustomError {
   constructor(message = "Validation error", code = "VALIDATION_ERROR") {
