@@ -1,76 +1,76 @@
 const { createUser, getUser, addCoinsToUserAccount } = require("../services/services");
 const { activate, logoutUser, refreshFunc } = require("../services/user-service");
-const { InternalServerError } = require("../middleware/error-handler");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
+const handleErrorResponse = (res, error, defaultStatus = "No name error") => {
+  res.status(error.status || defaultStatus).send(error);
+};
+
+const setRefreshTokenCookie = (res, token) => {
+  res.cookie("refreshToken", token, {
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 дней
+    httpOnly: true,
+  });
+};
+
 const registerUser = async (req, res) => {
   try {
-    const resultRegistration = await createUser(req.body);
-    res.cookie("refreshToken", resultRegistration.data.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-    res.status(201).send(resultRegistration.data);
+    const { data } = await createUser(req.body);
+    setRefreshTokenCookie(res, data.refreshToken);
+    res.status(201).send(data);
   } catch (error) {
-    res.status(error.status || 500).send({ error });
+    handleErrorResponse(res, error);
   }
 };
 
 const authUser = async (req, res) => {
   try {
-    const resultAuth = await getUser(req.body);
-    res.cookie("refreshToken", resultAuth.data.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-    res.status(201).send(resultAuth.data);
+    const { data } = await getUser(req.body);
+    setRefreshTokenCookie(res, data.refreshToken);
+    res.status(200).send(data);
   } catch (error) {
-    res.status(error.status || 500).send({ error });
+    handleErrorResponse(res, error);
   }
 };
 
 const addCoin = async (req, res) => {
   try {
-    const resultAddToCoin = await addCoinsToUserAccount(req.body);
-
-    res.status(201).send(resultAddToCoin);
+    const result = await addCoinsToUserAccount(req.body);
+    res.status(201).send(result);
   } catch (error) {
-    res.status(error.status || 500).send({ error });
+    handleErrorResponse(res, error);
   }
 };
 
-// Удаление refresh токена с базы данных
 const logout = async (req, res) => {
   try {
     const { refreshToken } = req.cookies;
-    const resultDeleteToken = await logoutUser(refreshToken);
+    await logoutUser(refreshToken);
     res.clearCookie("refreshToken");
-    return resultDeleteToken;
+    res.status(200).send({ message: "Logout successful" });
   } catch (error) {
-    res.status(error.status || 500).send({ error });
+    handleErrorResponse(res, error);
   }
 };
 
-// Активация аккаунта
 const activateUser = async (req, res) => {
   try {
     const activationLink = req.params.link;
     await activate(activationLink);
-    return res.redirect(process.env.CLIENT_URL);
+    res.redirect(process.env.CLIENT_URL);
   } catch (error) {
-    console.error(error);
-    throw error;
+    handleErrorResponse(res, error);
   }
 };
 
-const refresh = async (req, res, next) => {
+const refresh = async (req, res) => {
   try {
     const { refreshToken } = req.cookies;
     const resultAccessToken = await refreshFunc(refreshToken);
-    return resultAccessToken;
+    res.status(200).send(resultAccessToken);
   } catch (error) {
-    res.status(error.status || 500).send({ message: error.message });
+    handleErrorResponse(res, error);
   }
 };
 

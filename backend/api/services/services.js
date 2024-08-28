@@ -15,19 +15,19 @@ const getUser = async (body) => {
   const existingUser = await Users.findOne({ where: { login } });
 
   if (!existingUser) {
-    throw new AuthorizationError('Неправильный логин или пароль', 403);
+    throw new AuthorizationError('Неправильный логин или пароль');
   }
 
   const isPasswordValid = await bcrypt.compare(password, existingUser.password);
 
   if (!isPasswordValid) {
-    throw new AuthorizationError('Неправильный логин или пароль', 403);
+    throw new AuthorizationError('Неправильный логин или пароль');
   };
 
   const userDto = new UserDto(existingUser);
 
   if (!userDto.isActivated) {
-    throw new VerifyError('Почта не прошла верификацию, активируйте свой профиль перейдя по ссылке отправленной вам на почту', 402);
+    throw new VerifyError('Почта не прошла верификацию, активируйте свой профиль перейдя по ссылке отправленной вам на почту');
   }
 
   const tokens = await tokenService(userDto.toJSON());
