@@ -18,7 +18,7 @@ const registerUser = async (req, res) => {
   try {
     const { data } = await createUser(req.body);
     setRefreshTokenCookie(res, data.refreshToken);
-    res.status(201).send(data);
+    res.status(201).send({ accessToken: data.accessToken });
   } catch (error) {
     handleErrorResponse(res, error);
   }
@@ -28,7 +28,7 @@ const authUser = async (req, res) => {
   try {
     const { data } = await getUser(req.body);
     setRefreshTokenCookie(res, data.refreshToken);
-    res.status(200).send(data);
+    res.status(200).send({ accessToken: data.accessToken });
   } catch (error) {
     handleErrorResponse(res, error);
   }
@@ -74,6 +74,16 @@ const refresh = async (req, res) => {
   }
 };
 
+const currentUser = async (req, res) => {
+  try {
+    const { id, email, login, coins, level } = req.user;
+    const user = { id, email, login, coins, level };
+    res.status(200).send(user);
+  } catch (error) {
+    handleErrorResponse(res, error);
+  }
+};
+
 module.exports = {
   registerUser,
   authUser,
@@ -81,4 +91,5 @@ module.exports = {
   logout,
   activateUser,
   refresh,
+  currentUser
 };

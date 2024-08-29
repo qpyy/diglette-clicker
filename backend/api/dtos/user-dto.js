@@ -24,7 +24,6 @@ class UserDto {
       isActivated: this.isActivated,
       level: this.level,
     }
-
   }
 }
 

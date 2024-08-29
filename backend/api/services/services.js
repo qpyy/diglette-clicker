@@ -37,8 +37,7 @@ const getUser = async (body) => {
   return {
     status: 200,
     data: {
-      ...tokens,
-      user: userDto
+      ...tokens
     }
   };
 }
@@ -56,7 +55,7 @@ const createUser = async (body) => {
   });
 
   if (existingUser !== null) {
-    throw new BadRequestError('Пользователь с таким логином или почтой уже зарегистрирован', 400);
+    throw new BadRequestError('Пользователь с таким логином или почтой уже зарегистрирован');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -81,8 +80,7 @@ const createUser = async (body) => {
   return {
     status: 201,
     data: {
-      ...tokens,
-      user: userDto
+      ...tokens
     }
   };
 };

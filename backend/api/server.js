@@ -44,6 +44,7 @@ fastify.register(
     instance.addHook("preHandler", authMiddleware);
     instance.route(router().takeCoin);
     instance.route(router().logout);
+    instance.route(router().userMe);
     done();
   },
   { prefix: "/" }
