@@ -8,7 +8,8 @@ const {
   addCoin,
   logout,
   refresh,
-  activateUser
+  activateUser,
+  currentUser
 } = require('../controllers/controllers');
 const { middleware } = require('../middleware/auth-middleware');
 
@@ -76,6 +77,11 @@ function router() {
       method: 'GET',
       url: 'auth/refresh',
       handler: refresh,
+    },
+    userMe: {
+      method: 'GET',
+      url: 'user/me',
+      handler: currentUser,
     }
   };
 }

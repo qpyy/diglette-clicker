@@ -44,7 +44,6 @@ const refreshFunc = async (refreshToken) => {
 
     return {
       accessToken: newAccessToken.accessToken,
-      user: userDto,
     };
   } catch (err) {
     console.log(err);
