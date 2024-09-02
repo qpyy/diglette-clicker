@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DigletImage from "../../assets/images/diglet.svg";
+import DigletImage from "../../assets/images/diglette.svg";
 import OverlayDigletImage from "../../assets/images/overlay-diglet.svg";
 import { Container, Wrapper, Diglet, DigletOverlay } from "./styles";
 

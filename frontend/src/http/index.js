@@ -27,7 +27,7 @@ $api.interceptors.response.use(
     originalRequest._retry = false;
     const { setAccessToken, logout } = useStore.getState();
 
-    if (error.response.status === 401 && !originalRequest._retry) {
+    if (error.response.data.status === 403.7 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
@@ -42,7 +42,7 @@ $api.interceptors.response.use(
       }
     }
 
-    if (error.response.status === 403) {
+    if (error.response.data.status === 403.13) {
       logout();
       window.location.href = "/signin";
       return Promise.reject(error);
