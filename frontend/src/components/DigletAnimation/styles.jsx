@@ -75,7 +75,7 @@ const Wrapper = styled.div`
 
 const Diglet = styled.img`
   position: absolute;
-  bottom: -200px;
+  bottom: -125px;
   width: 100%;
   height: auto;
   cursor: pointer;
