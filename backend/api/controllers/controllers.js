@@ -1,5 +1,5 @@
 const { createUser, getUser, addCoinsToUserAccount } = require("../services/services");
-const { activate, logoutUser, refreshFunc } = require("../services/user-service");
+const { activate, logoutUser, refreshFunc, getUserInfo } = require("../services/user-service");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
@@ -76,9 +76,9 @@ const refresh = async (req, res) => {
 
 const currentUser = async (req, res) => {
   try {
-    const { id, email, login, coins, level } = req.user;
-    const user = { id, email, login, coins, level };
-    res.status(200).send(user);
+    const { id } = req.user;
+    const resultSearch = await getUserInfo(id);
+    res.status(200).send(resultSearch);
   } catch (error) {
     handleErrorResponse(res, error);
   }

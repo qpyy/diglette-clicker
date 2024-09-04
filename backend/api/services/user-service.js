@@ -1,7 +1,7 @@
 const { Users } = require("../models/sequalize");
 const { removeToken, validateRefreshToken, tokenService } = require("./token-service");
 const UserDto = require("../dtos/user-dto");
-const { RefreshTokenError, InternalServerError } = require("../middleware/error-handler");
+const { RefreshTokenError, InternalServerError, NotFoundUser } = require("../middleware/error-handler");
 
 const activate = async (activationLink) => {
   try {
@@ -14,7 +14,7 @@ const activate = async (activationLink) => {
     await user.save();
   } catch (error) {
     console.log(error);
-    throw new InternalServerError("INTERNAL_SERVER_ERROR", 500);
+    throw new InternalServerError("INTERNAL_SERVER_ERROR");
   }
 };
 
@@ -23,7 +23,7 @@ const logoutUser = async (refreshToken) => {
     const token = await removeToken(refreshToken);
     return token;
   } catch (error) {
-    throw new InternalServerError("INTERNAL_SERVER_ERROR", 500);
+    throw new InternalServerError("INTERNAL_SERVER_ERROR");
   }
 };
 
@@ -51,4 +51,18 @@ const refreshFunc = async (refreshToken) => {
   }
 };
 
-module.exports = { activate, logoutUser, refreshFunc };
+const getUserInfo = async (id) => {
+  try {
+    const existingUser = await Users.findOne({ where: { id: id } });
+    if (!existingUser) {
+      throw new NotFoundUser("User not found");
+    }
+    const userDto = new UserDto(existingUser);
+    return userDto;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
+
+module.exports = { activate, logoutUser, refreshFunc, getUserInfo };
