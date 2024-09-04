@@ -12,6 +12,7 @@ const Container = styled.div`
     background: radial-gradient(circle at center, #967448 40%, #7f623c 60%);
     -webkit-background-clip: text;
     background-clip: text;
+    font-variant-numeric: tabular-nums;
   }
 
   @media (max-width: 570px) {

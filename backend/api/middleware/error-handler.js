@@ -56,6 +56,12 @@ class InternalServerError extends CustomError {
   }
 }
 
+class NotFoundUser extends CustomError {
+  constructor(message = "User not found", code = "USER_NOT_FOUND") {
+    super(message, 404, code);
+  }
+}
+
 class BadRequestError extends CustomError {
   constructor(message = "Bad request", code = "BAD_REQUEST_ERROR") {
     super(message, 400, code);
@@ -85,5 +91,6 @@ module.exports = {
   ForbiddenError,
   SendMailError,
   VerifyError,
-  AccessTokenError
+  AccessTokenError,
+  NotFoundUser
 };

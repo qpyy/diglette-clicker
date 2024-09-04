@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useStore } from "../store/useStore";
 import { addCoinService } from "../services";
 
@@ -8,14 +8,11 @@ export const useCoins = () => {
     setUser: state.setUser,
   }));
 
-  const queryClient = useQueryClient();
-
   const addCoinsMutation = useMutation({
     mutationFn: (amount) => addCoinService(user.login, amount),
     onSuccess: (newCoinCount) => {
-      const updatedUser = { ...user, coins: newCoinCount };
-      setUser(updatedUser);
-      queryClient.invalidateQueries(["user"]);
+      const newUser = { ...user, coins: newCoinCount };
+      setUser(newUser);
     },
   });
 
@@ -24,7 +21,6 @@ export const useCoins = () => {
   };
 
   return {
-    coins: user.coins,
     addCoins,
     isLoading: addCoinsMutation.isLoading,
     isError: addCoinsMutation.isError,

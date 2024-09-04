@@ -24,4 +24,10 @@ const addCoinService = async (login, coin) => {
   return response.data;
 };
 
-export { logInService, signUpService, refreshTokenService, addCoinService };
+const currentUserService = async () => {
+  const response = await $api.get(`/user/me`);
+
+  return response.data;
+};
+
+export { logInService, signUpService, refreshTokenService, addCoinService, currentUserService };
