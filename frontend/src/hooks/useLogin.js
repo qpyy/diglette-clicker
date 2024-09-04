@@ -3,15 +3,13 @@ import { useStore } from "../store/useStore";
 import { logInService } from "../services";
 
 export const useLogIn = () => {
-  const { setUser, setAccessToken } = useStore((state) => ({
-    setUser: state.setUser,
+  const { setAccessToken } = useStore((state) => ({
     setAccessToken: state.setAccessToken,
   }));
 
   const loginMutation = useMutation({
     mutationFn: logInService,
     onSuccess: (data) => {
-      setUser(data.user);
       setAccessToken(data.accessToken);
     },
   });
