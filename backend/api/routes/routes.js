@@ -9,7 +9,8 @@ const {
   logout,
   refresh,
   activateUser,
-  currentUser
+  currentUser,
+  profileUsers
 } = require('../controllers/controllers');
 const { middleware } = require('../middleware/auth-middleware');
 
@@ -82,6 +83,11 @@ function router() {
       method: 'GET',
       url: 'user/me',
       handler: currentUser,
+    },
+    profile: {
+      method: 'GET',
+      url: 'user/:login',
+      handler: profileUsers,
     }
   };
 }

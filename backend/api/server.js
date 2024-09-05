@@ -45,6 +45,7 @@ fastify.register(
     instance.route(router().takeCoin);
     instance.route(router().logout);
     instance.route(router().userMe);
+    instance.route(router().profile);
     done();
   },
   { prefix: "/" }

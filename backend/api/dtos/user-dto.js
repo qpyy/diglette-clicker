@@ -25,6 +25,15 @@ class UserDto {
       level: this.level,
     }
   }
+
+  toProfile() {
+    return {
+      id: this.id,
+      login: this.login,
+      coins: this.coins,
+      level: this.level,
+    }
+  }
 }
 
 module.exports = UserDto;
