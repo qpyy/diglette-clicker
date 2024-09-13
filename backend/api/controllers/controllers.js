@@ -1,6 +1,7 @@
 const { createUser, getUser, addCoinsToUserAccount } = require("../services/services");
 const { activate, logoutUser, refreshFunc, getUserInfo } = require("../services/user-service");
-const { getProfileUsers } = require("../services/profile-view");
+const { getFileByName } = require("../services/file-service");
+const { getProfileUsers } = require("../services/profile-service");
 const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, "..", ".env") });
 
@@ -88,11 +89,21 @@ const currentUser = async (req, res) => {
 const profileUsers = async (req, res) => {
   try {
     const login = req.params.login;
-    // console.log(login);
     const resultSearchUsers = await getProfileUsers(login);
     res.status(200).send(resultSearchUsers);
   } catch (error) {
     handleErrorResponse(res, error);
+  }
+};
+
+const fileController = async (req, res) => {
+  try {
+    const pathFile = req.params.path;
+    const file = await getFileByName(pathFile);
+    res.header('Content-Type', 'image/svg+xml');
+    res.status(200).send(file);
+  } catch (error) {
+    handleErrorResponse(req, error);
   }
 }
 
@@ -104,5 +115,6 @@ module.exports = {
   activateUser,
   refresh,
   currentUser,
-  profileUsers
+  profileUsers,
+  fileController
 };

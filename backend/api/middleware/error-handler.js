@@ -80,6 +80,12 @@ class ForbiddenError extends CustomError {
   }
 }
 
+class FileNotFound extends CustomError {
+  constructor(message = "NotFound", code = "FILE_NOT_FOUND") {
+    super(message, 404, code);
+  }
+}
+
 module.exports = {
   RefreshTokenError,
   AuthorizationError,
@@ -92,5 +98,6 @@ module.exports = {
   SendMailError,
   VerifyError,
   AccessTokenError,
-  NotFoundUser
+  NotFoundUser,
+  FileNotFound
 };

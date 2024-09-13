@@ -33,6 +33,7 @@ fastify.register(
     instance.route(router().authorization);
     instance.route(router().refresh);
     instance.route(router().activate);
+    instance.route(router().source);
     done();
   },
   { prefix: "/" }
