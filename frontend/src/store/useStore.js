@@ -2,8 +2,12 @@ import { create } from "zustand";
 
 export const useStore = create((set) => ({
   user: {},
+  otherUser: {},
   accessToken: localStorage.getItem("accessToken") || "",
-  setUser: (user) => set({ user }),
+
+  setUser: (user) => {
+    set({ user });
+  },
   setAccessToken: (accessToken) => {
     localStorage.setItem("accessToken", accessToken);
     set({ accessToken });

@@ -87,7 +87,7 @@ const SignUpPage = () => {
 
     try {
       await signUp({ email, login, password });
-      navigate("/profile");
+      navigate("/user/" + login);
     } catch {
       setOpenSnackbar(true);
     }

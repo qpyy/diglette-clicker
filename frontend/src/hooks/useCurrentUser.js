@@ -1,23 +1,23 @@
-import { useMutation } from "@tanstack/react-query";
-import { useStore } from "../store/useStore";
+import { useQuery } from "@tanstack/react-query";
 import { currentUserService } from "../services";
 
 export const useCurrentUser = () => {
-  const { setUser } = useStore((state) => ({
-    setUser: state.setUser,
-  }));
-
-  const currentUserMutation = useMutation({
-    mutationFn: currentUserService,
-    onSuccess: (user) => {
-      setUser(user);
-    },
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: currentUserService,
+    retry: 1,
+    refetchOnWindowFocus: false,
   });
 
   return {
-    getCurrentUser: currentUserMutation.mutateAsync,
-    isLoading: currentUserMutation.isLoading,
-    isError: currentUserMutation.isError,
-    error: currentUserMutation.error,
+    user,
+    isLoading,
+    isError,
+    error,
   };
 };

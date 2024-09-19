@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomLink from "../../components/UI/CustomLink";
 import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
+import CustomLink from "../../components/UI/CustomLink";
 import { useLogIn } from "../../hooks/useLogin";
 import { Container, Form, Title, Button, DividerText } from "./styles";
 
 const SignInPage = () => {
-  const [user, setUser] = useState({
+  const [newUser, setUser] = useState({
     login: "",
     password: "",
   });
@@ -34,7 +34,7 @@ const SignInPage = () => {
     setErrorsMessage({ username: "", password: "" });
     const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
     const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
-    const { login, password } = user;
+    const { login, password } = newUser;
 
     if (!login.trim()) {
       setErrorsMessage({ username: "Login is required." });
@@ -61,8 +61,8 @@ const SignInPage = () => {
     }
 
     try {
-      await logIn(user);
-      navigate("/profile");
+      await logIn(newUser);
+      navigate("/user/" + login);
     } catch {
       setOpenSnackbar(true);
     }
