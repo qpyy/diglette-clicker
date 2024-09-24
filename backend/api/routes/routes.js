@@ -13,7 +13,6 @@ const {
   profileUsers,
   fileController
 } = require('../controllers/controllers');
-const { middleware } = require('../middleware/auth-middleware');
 
 function router() {
   return {
