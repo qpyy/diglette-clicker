@@ -1,68 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
 import CustomLink from "../../components/UI/CustomLink";
 import { useLogIn } from "../../hooks/useLogin";
+import { useStore } from "../../store/useStore";
+import { errorMessages, patterns } from "../../constants/validationConstants";
 import { Container, Form, Title, Button, DividerText } from "./styles";
 
+const initialUserState = {
+  login: "",
+  password: "",
+};
+
+const initialErrorState = {
+  username: "",
+  password: "",
+};
+
 const SignInPage = () => {
-  const [newUser, setUser] = useState({
-    login: "",
-    password: "",
-  });
-  const [errorsMessage, setErrorsMessage] = useState({ username: "", password: "" });
+  const [newUser, setUser] = useState(initialUserState);
+  const [errorsMessage, setErrorsMessage] = useState(initialErrorState);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { logIn, isLoading, error } = useLogIn();
+  const { logout } = useStore.getState();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    logout();
+  }, []);
 
+  const handleChange = ({ target: { name, value } }) => {
     setUser((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  const handleCloseSnackbar = () => setOpenSnackbar(false);
 
-  const validateForm = async (e) => {
-    e.preventDefault();
-    setErrorsMessage({ username: "", password: "" });
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
-    const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
+  const validate = () => {
     const { login, password } = newUser;
+    const newErrors = { ...initialErrorState };
 
     if (!login.trim()) {
-      setErrorsMessage({ username: "Login is required." });
-      return;
-    }
-
-    if (!usernamePattern.test(login)) {
-      setErrorsMessage({
-        username: "Login must be 6-16 characters long and contain only letters and numbers.",
-      });
-      return;
+      newErrors.username = errorMessages.requiredLogin;
+    } else if (!patterns.username.test(login)) {
+      newErrors.username = errorMessages.invalidLogin;
     }
 
     if (!password.trim()) {
-      setErrorsMessage({ password: "Password is required." });
-      return;
+      newErrors.password = errorMessages.requiredPassword;
+    } else if (!patterns.password.test(password)) {
+      newErrors.password = errorMessages.invalidPassword;
     }
 
-    if (!passwordPattern.test(password)) {
-      setErrorsMessage({
-        password: "Password must be 6+ characters long and contain both letters and numbers.",
-      });
-      return;
-    }
+    setErrorsMessage(newErrors);
+    return !newErrors.username && !newErrors.password;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
 
     try {
       await logIn(newUser);
-      navigate("/user/" + login);
+      navigate(`/user/${newUser.login}`);
     } catch {
       setOpenSnackbar(true);
     }
@@ -70,7 +73,7 @@ const SignInPage = () => {
 
   return (
     <Container>
-      <Form onSubmit={validateForm}>
+      <Form onSubmit={handleSubmit}>
         <Title>Log In</Title>
         <CustomInput
           name="login"
@@ -98,7 +101,7 @@ const SignInPage = () => {
 
       <CustomSnackbar
         open={openSnackbar}
-        message={error?.message || "Failed to sign up"}
+        message={error?.message || "Failed to sign in"}
         handleClose={handleCloseSnackbar}
         autoHideDuration={2000}
       />

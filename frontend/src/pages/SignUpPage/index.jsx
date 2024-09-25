@@ -4,90 +4,76 @@ import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
 import CustomLink from "../../components/UI/CustomLink";
 import { useSignUp } from "../../hooks/useSignUp";
+import { errorMessages, patterns } from "../../constants/validationConstants";
 import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } from "./styles";
 
+const initialUserState = {
+  email: "",
+  login: "",
+  password: "",
+  repeatPassword: "",
+};
+
+const initialErrorState = {
+  email: "",
+  login: "",
+  password: "",
+  repeatPassword: "",
+};
+
 const SignUpPage = () => {
-  const [newUser, setNewUser] = useState({
-    email: "",
-    login: "",
-    password: "",
-    repeatPassword: "",
-  });
-  const [errorsMessage, setErrorsMessage] = useState({
-    email: "",
-    login: "",
-    password: "",
-    repeatPassword: "",
-  });
+  const [newUser, setNewUser] = useState(initialUserState);
+  const [errorsMessage, setErrorsMessage] = useState(initialErrorState);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const { signUp, isLoading, error } = useSignUp();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
+  const handleChange = ({ target: { name, value } }) => {
     setNewUser((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  const handleCloseSnackbar = () => setOpenSnackbar(false);
 
-  const validateForm = async (e) => {
-    e.preventDefault();
-    setErrorsMessage({ email: "", login: "", password: "" });
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
+  const validate = () => {
     const { email, login, password, repeatPassword } = newUser;
+    const newErrors = { ...initialErrorState };
 
     if (!email.trim()) {
-      setErrorsMessage({ email: "Email is required." });
-      return;
-    }
-
-    if (!emailPattern.test(email)) {
-      setErrorsMessage({ email: "Invalid email address." });
-      return;
+      newErrors.email = errorMessages.requiredEmail;
+    } else if (!patterns.email.test(email)) {
+      newErrors.email = errorMessages.invalidEmail;
     }
 
     if (!login.trim()) {
-      setErrorsMessage({ login: "Login is required." });
-      return;
-    }
-
-    if (!usernamePattern.test(login)) {
-      setErrorsMessage({
-        login: "Login must be 6-16 characters long and contain only letters and numbers.",
-      });
-      return;
+      newErrors.login = errorMessages.requiredLogin;
+    } else if (!patterns.username.test(login)) {
+      newErrors.login = errorMessages.invalidLogin;
     }
 
     if (!password.trim()) {
-      setErrorsMessage({ password: "Password is required." });
-      return;
-    }
-
-    if (!passwordPattern.test(password)) {
-      setErrorsMessage({
-        password: "Password must be 6+ characters long and contain both letters and numbers.",
-      });
-      return;
+      newErrors.password = errorMessages.requiredPassword;
+    } else if (!patterns.password.test(password)) {
+      newErrors.password = errorMessages.invalidPassword;
     }
 
     if (password !== repeatPassword) {
-      setErrorsMessage({
-        repeatPassword: "Passwords are different.",
-      });
-      return;
+      newErrors.repeatPassword = errorMessages.passwordMismatch;
     }
 
+    setErrorsMessage(newErrors);
+    return !newErrors.email && !newErrors.login && !newErrors.password && !newErrors.repeatPassword;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
     try {
-      await signUp({ email, login, password });
-      navigate("/user/" + login);
+      await signUp({ email: newUser.email, login: newUser.login, password: newUser.password });
+      navigate(`/user/${newUser.login}`);
     } catch {
       setOpenSnackbar(true);
     }
@@ -95,7 +81,7 @@ const SignUpPage = () => {
 
   return (
     <StyledContainer>
-      <StyledForm onSubmit={validateForm}>
+      <StyledForm onSubmit={handleSubmit}>
         <StyledTitle>Sign Up</StyledTitle>
         <CustomInput
           name="email"

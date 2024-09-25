@@ -1,5 +1,4 @@
 import $api from "../http";
-import { useStore } from "../store/useStore";
 
 const signUpService = async (signUpData) => {
   const response = await $api.post(`/registration`, signUpData);
@@ -20,16 +19,9 @@ const refreshTokenService = async () => {
 };
 
 const currentUserService = async () => {
-  const { setUser } = useStore.getState();
+  const response = await $api.get(`/user/me`);
 
-  try {
-    const response = await $api.get(`/user/me`);
-    setUser(response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Ошибка получения пользователя:", error);
-    throw error;
-  }
+  return response.data;
 };
 
 const getUserByLoginService = async (login) => {

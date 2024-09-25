@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useStore } from "../store/useStore";
 import { refreshTokenService } from "../services";
 
 const $api = axios.create({
@@ -25,7 +24,6 @@ $api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     originalRequest._retry = false;
-    const { logout } = useStore.getState();
 
     if (error.response.data.status === 403.7 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -43,7 +41,6 @@ $api.interceptors.response.use(
     }
 
     if (error.response.data.status === 403.13) {
-      logout();
       window.location.href = "/signin";
       return Promise.reject(error);
     }

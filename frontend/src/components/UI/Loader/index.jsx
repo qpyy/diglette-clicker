@@ -1,11 +1,7 @@
 import { StyledLoader } from "./styles";
 
 const Loader = () => {
-  return (
-    <article>
-      <StyledLoader size={100} />
-    </article>
-  );
+  return <StyledLoader size={100} />;
 };
 
 export default Loader;

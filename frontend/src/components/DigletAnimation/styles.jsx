@@ -80,16 +80,16 @@ const Diglet = styled.img`
   height: auto;
   cursor: pointer;
   transform: translateY(30%) rotate(6deg);
-  animation: ${({ animate }) => (animate ? moveUpAndDownLarge : "none")} 0.3s forwards;
+  animation: ${({ $animate }) => ($animate ? moveUpAndDownLarge : "none")} 0.3s forwards;
 
   @media (max-width: 460px) {
     transform: translateY(20%) rotate(6deg);
-    animation: ${({ animate }) => (animate ? moveUpAndDownMedium : "none")} 0.3s forwards;
+    animation: ${({ $animate }) => ($animate ? moveUpAndDownMedium : "none")} 0.3s forwards;
   }
 
   @media (max-width: 350px) {
     transform: translateY(15%) rotate(6deg);
-    animation: ${({ animate }) => (animate ? moveUpAndDownSmall : "none")} 0.3s forwards;
+    animation: ${({ $animate }) => ($animate ? moveUpAndDownSmall : "none")} 0.3s forwards;
   }
 `;
 

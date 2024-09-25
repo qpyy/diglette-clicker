@@ -1,37 +1,21 @@
 import styled from "styled-components";
 
-const Container = styled.div`
+const StyledProfileWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 
   h1 {
-    font-size: 13rem;
+    font-size: clamp(3rem, 12vw, 13rem);
     margin: 0;
     color: transparent;
     background: radial-gradient(circle at center, #967448 40%, #7f623c 60%);
     -webkit-background-clip: text;
     background-clip: text;
     font-variant-numeric: tabular-nums;
-  }
-
-  @media (max-width: 570px) {
-    h1 {
-      font-size: 10rem;
-    }
-  }
-
-  @media (max-width: 460px) {
-    h1 {
-      font-size: 8rem;
-    }
-  }
-
-  @media (max-width: 340px) {
-    h1 {
-      font-size: 6rem;
-    }
+    white-space: nowrap;
+    overflow-wrap: break-word;
   }
 `;
 
-export { Container };
+export { StyledProfileWrapper };
