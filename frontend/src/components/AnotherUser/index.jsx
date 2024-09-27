@@ -1,13 +1,13 @@
 import DigletAnimation from "../DigletAnimation";
-import { StyledAnotherUserWrapper } from "./styles";
+import { StyledUserWrapper } from "../CurrentUser/styles";
 
 const AnotherUser = ({ otherUser }) => {
   return (
-    <StyledAnotherUserWrapper>
+    <StyledUserWrapper>
       <h2>Его зовут: {otherUser?.login}</h2>
       <h1>{otherUser?.coins}</h1>
       <DigletAnimation />
-    </StyledAnotherUserWrapper>
+    </StyledUserWrapper>
   );
 };
 

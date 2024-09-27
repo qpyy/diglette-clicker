@@ -10,14 +10,11 @@ const DigletAnimation = ({ incrementCount }) => {
 
   const handleClick = () => {
     setAnimate(true);
-    addCoins(10);
-    setTimeout(() => {
-      setAnimate(false);
-    }, 300);
-  };
 
-  const handleAnimation = () => {
-    setAnimate(true);
+    if (incrementCount) {
+      addCoins(10);
+    }
+
     setTimeout(() => {
       setAnimate(false);
     }, 300);
@@ -25,7 +22,7 @@ const DigletAnimation = ({ incrementCount }) => {
 
   return (
     <Container>
-      <Wrapper onClick={incrementCount ? handleClick : handleAnimation}>
+      <Wrapper onClick={handleClick}>
         <Diglet src={DigletImage} $animate={animate} />
       </Wrapper>
       <DigletOverlay src={OverlayDigletImage} />

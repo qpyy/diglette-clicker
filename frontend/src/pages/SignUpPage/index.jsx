@@ -4,7 +4,8 @@ import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
 import CustomLink from "../../components/UI/CustomLink";
 import { useSignUp } from "../../hooks/useSignUp";
-import { errorMessages, patterns } from "../../constants/validationConstants";
+import useValidation from "../../hooks/useValidation";
+import { validateSignUp } from "../../utils/validationRules";
 import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } from "./styles";
 
 const initialUserState = {
@@ -14,17 +15,10 @@ const initialUserState = {
   repeatPassword: "",
 };
 
-const initialErrorState = {
-  email: "",
-  login: "",
-  password: "",
-  repeatPassword: "",
-};
-
 const SignUpPage = () => {
   const [newUser, setNewUser] = useState(initialUserState);
-  const [errorsMessage, setErrorsMessage] = useState(initialErrorState);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const { errors, validate } = useValidation(validateSignUp);
   const { signUp, isLoading, error } = useSignUp();
   const navigate = useNavigate();
 
@@ -35,47 +29,17 @@ const SignUpPage = () => {
     }));
   };
 
-  const handleCloseSnackbar = () => setOpenSnackbar(false);
-
-  const validate = () => {
-    const { email, login, password, repeatPassword } = newUser;
-    const newErrors = { ...initialErrorState };
-
-    if (!email.trim()) {
-      newErrors.email = errorMessages.requiredEmail;
-    } else if (!patterns.email.test(email)) {
-      newErrors.email = errorMessages.invalidEmail;
-    }
-
-    if (!login.trim()) {
-      newErrors.login = errorMessages.requiredLogin;
-    } else if (!patterns.username.test(login)) {
-      newErrors.login = errorMessages.invalidLogin;
-    }
-
-    if (!password.trim()) {
-      newErrors.password = errorMessages.requiredPassword;
-    } else if (!patterns.password.test(password)) {
-      newErrors.password = errorMessages.invalidPassword;
-    }
-
-    if (password !== repeatPassword) {
-      newErrors.repeatPassword = errorMessages.passwordMismatch;
-    }
-
-    setErrorsMessage(newErrors);
-    return !newErrors.email && !newErrors.login && !newErrors.password && !newErrors.repeatPassword;
-  };
+  const handleCloseSnackbar = () => setIsSnackbarOpen(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate(newUser)) return;
 
     try {
       await signUp({ email: newUser.email, login: newUser.login, password: newUser.password });
       navigate(`/user/${newUser.login}`);
     } catch {
-      setOpenSnackbar(true);
+      setIsSnackbarOpen(true);
     }
   };
 
@@ -88,7 +52,7 @@ const SignUpPage = () => {
           inputType="email"
           placeholderText="Your email..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.email}
+          errorMessage={errors.email}
           autoCompleteValue="off"
         />
         <CustomInput
@@ -96,7 +60,7 @@ const SignUpPage = () => {
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.login}
+          errorMessage={errors.login}
           autoCompleteValue="username"
         />
         <CustomInput
@@ -104,7 +68,7 @@ const SignUpPage = () => {
           inputType="password"
           placeholderText="Your password..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.password}
+          errorMessage={errors.password}
           autoCompleteValue="current-password"
         />
         <CustomInput
@@ -112,7 +76,7 @@ const SignUpPage = () => {
           inputType="password"
           placeholderText="Repeat your password..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.repeatPassword}
+          errorMessage={errors.repeatPassword}
           autoCompleteValue="off"
         />
         <Button type="submit" disabled={isLoading}>
@@ -124,7 +88,7 @@ const SignUpPage = () => {
       </StyledForm>
 
       <CustomSnackbar
-        open={openSnackbar}
+        open={isSnackbarOpen}
         message={error?.message || "Failed to sign up"}
         handleClose={handleCloseSnackbar}
         autoHideDuration={2000}

@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-const StyledCurrentUserWrapper = styled.div`
+const StyledUserWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 
-export { StyledCurrentUserWrapper };
+export { StyledUserWrapper };

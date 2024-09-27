@@ -5,7 +5,8 @@ import CustomInput from "../../components/UI/CustomInput";
 import CustomLink from "../../components/UI/CustomLink";
 import { useLogIn } from "../../hooks/useLogin";
 import { useStore } from "../../store/useStore";
-import { errorMessages, patterns } from "../../constants/validationConstants";
+import useValidation from "../../hooks/useValidation";
+import { validateSignIn } from "../../utils/validationRules";
 import { Container, Form, Title, Button, DividerText } from "./styles";
 
 const initialUserState = {
@@ -13,15 +14,10 @@ const initialUserState = {
   password: "",
 };
 
-const initialErrorState = {
-  username: "",
-  password: "",
-};
-
 const SignInPage = () => {
   const [newUser, setUser] = useState(initialUserState);
-  const [errorsMessage, setErrorsMessage] = useState(initialErrorState);
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const { errors, validate } = useValidation(validateSignIn);
   const { logIn, isLoading, error } = useLogIn();
   const { logout } = useStore.getState();
   const navigate = useNavigate();
@@ -37,37 +33,17 @@ const SignInPage = () => {
     }));
   };
 
-  const handleCloseSnackbar = () => setOpenSnackbar(false);
-
-  const validate = () => {
-    const { login, password } = newUser;
-    const newErrors = { ...initialErrorState };
-
-    if (!login.trim()) {
-      newErrors.username = errorMessages.requiredLogin;
-    } else if (!patterns.username.test(login)) {
-      newErrors.username = errorMessages.invalidLogin;
-    }
-
-    if (!password.trim()) {
-      newErrors.password = errorMessages.requiredPassword;
-    } else if (!patterns.password.test(password)) {
-      newErrors.password = errorMessages.invalidPassword;
-    }
-
-    setErrorsMessage(newErrors);
-    return !newErrors.username && !newErrors.password;
-  };
+  const handleCloseSnackbar = () => setIsSnackbarOpen(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    if (!validate(newUser)) return;
 
     try {
       await logIn(newUser);
       navigate(`/user/${newUser.login}`);
     } catch {
-      setOpenSnackbar(true);
+      setIsSnackbarOpen(true);
     }
   };
 
@@ -80,7 +56,7 @@ const SignInPage = () => {
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.username}
+          errorMessage={errors.login}
           autoCompleteValue="username"
         />
         <CustomInput
@@ -88,7 +64,7 @@ const SignInPage = () => {
           inputType="password"
           placeholderText="Your password..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.password}
+          errorMessage={errors.password}
           autoCompleteValue="current-password"
         />
         <Button type="submit" disabled={isLoading}>
@@ -100,7 +76,7 @@ const SignInPage = () => {
       </Form>
 
       <CustomSnackbar
-        open={openSnackbar}
+        open={isSnackbarOpen}
         message={error?.message || "Failed to sign in"}
         handleClose={handleCloseSnackbar}
         autoHideDuration={2000}

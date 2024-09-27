@@ -1,12 +1,12 @@
 import DigletAnimation from "../DigletAnimation";
-import { StyledCurrentUserWrapper } from "./styles";
+import { StyledUserWrapper } from "./styles";
 
 const CurrentUser = ({ currentUser }) => {
   return (
-    <StyledCurrentUserWrapper>
+    <StyledUserWrapper>
       <h1>{currentUser?.coins}</h1>
       <DigletAnimation incrementCount={true} />
-    </StyledCurrentUserWrapper>
+    </StyledUserWrapper>
   );
 };
 
