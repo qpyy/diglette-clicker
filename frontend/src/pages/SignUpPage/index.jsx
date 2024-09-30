@@ -4,105 +4,55 @@ import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
 import CustomLink from "../../components/UI/CustomLink";
 import { useSignUp } from "../../hooks/useSignUp";
+import useValidation from "../../hooks/useValidation";
+import { validateSignUp } from "../../utils/validationRules";
 import { StyledContainer, StyledForm, StyledTitle, Button, StyledDividerText } from "./styles";
 
+const initialUserState = {
+  email: "",
+  login: "",
+  password: "",
+  repeatPassword: "",
+};
+
 const SignUpPage = () => {
-  const [newUser, setNewUser] = useState({
-    email: "",
-    login: "",
-    password: "",
-    repeatPassword: "",
-  });
-  const [errorsMessage, setErrorsMessage] = useState({
-    email: "",
-    login: "",
-    password: "",
-    repeatPassword: "",
-  });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [newUser, setNewUser] = useState(initialUserState);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const { errors, validate } = useValidation(validateSignUp);
   const { signUp, isLoading, error } = useSignUp();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
+  const handleChange = ({ target: { name, value } }) => {
     setNewUser((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  const handleCloseSnackbar = () => setIsSnackbarOpen(false);
 
-  const validateForm = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorsMessage({ email: "", login: "", password: "" });
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
-    const { email, login, password, repeatPassword } = newUser;
-
-    if (!email.trim()) {
-      setErrorsMessage({ email: "Email is required." });
-      return;
-    }
-
-    if (!emailPattern.test(email)) {
-      setErrorsMessage({ email: "Invalid email address." });
-      return;
-    }
-
-    if (!login.trim()) {
-      setErrorsMessage({ login: "Login is required." });
-      return;
-    }
-
-    if (!usernamePattern.test(login)) {
-      setErrorsMessage({
-        login: "Login must be 6-16 characters long and contain only letters and numbers.",
-      });
-      return;
-    }
-
-    if (!password.trim()) {
-      setErrorsMessage({ password: "Password is required." });
-      return;
-    }
-
-    if (!passwordPattern.test(password)) {
-      setErrorsMessage({
-        password: "Password must be 6+ characters long and contain both letters and numbers.",
-      });
-      return;
-    }
-
-    if (password !== repeatPassword) {
-      setErrorsMessage({
-        repeatPassword: "Passwords are different.",
-      });
-      return;
-    }
+    if (!validate(newUser)) return;
 
     try {
-      await signUp({ email, login, password });
-      navigate("/profile");
+      await signUp({ email: newUser.email, login: newUser.login, password: newUser.password });
+      navigate(`/user/${newUser.login}`);
     } catch {
-      setOpenSnackbar(true);
+      setIsSnackbarOpen(true);
     }
   };
 
   return (
     <StyledContainer>
-      <StyledForm onSubmit={validateForm}>
+      <StyledForm onSubmit={handleSubmit}>
         <StyledTitle>Sign Up</StyledTitle>
         <CustomInput
           name="email"
           inputType="email"
           placeholderText="Your email..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.email}
+          errorMessage={errors.email}
           autoCompleteValue="off"
         />
         <CustomInput
@@ -110,7 +60,7 @@ const SignUpPage = () => {
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.login}
+          errorMessage={errors.login}
           autoCompleteValue="username"
         />
         <CustomInput
@@ -118,7 +68,7 @@ const SignUpPage = () => {
           inputType="password"
           placeholderText="Your password..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.password}
+          errorMessage={errors.password}
           autoCompleteValue="current-password"
         />
         <CustomInput
@@ -126,7 +76,7 @@ const SignUpPage = () => {
           inputType="password"
           placeholderText="Repeat your password..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.repeatPassword}
+          errorMessage={errors.repeatPassword}
           autoCompleteValue="off"
         />
         <Button type="submit" disabled={isLoading}>
@@ -138,7 +88,7 @@ const SignUpPage = () => {
       </StyledForm>
 
       <CustomSnackbar
-        open={openSnackbar}
+        open={isSnackbarOpen}
         message={error?.message || "Failed to sign up"}
         handleClose={handleCloseSnackbar}
         autoHideDuration={2000}

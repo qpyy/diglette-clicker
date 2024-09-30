@@ -1,83 +1,62 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import CustomLink from "../../components/UI/CustomLink";
 import CustomSnackbar from "../../components/UI/CustomSnackbar";
 import CustomInput from "../../components/UI/CustomInput";
+import CustomLink from "../../components/UI/CustomLink";
 import { useLogIn } from "../../hooks/useLogin";
+import { useStore } from "../../store/useStore";
+import useValidation from "../../hooks/useValidation";
+import { validateSignIn } from "../../utils/validationRules";
 import { Container, Form, Title, Button, DividerText } from "./styles";
 
+const initialUserState = {
+  login: "",
+  password: "",
+};
+
 const SignInPage = () => {
-  const [user, setUser] = useState({
-    login: "",
-    password: "",
-  });
-  const [errorsMessage, setErrorsMessage] = useState({ username: "", password: "" });
-  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [newUser, setUser] = useState(initialUserState);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const { errors, validate } = useValidation(validateSignIn);
   const { logIn, isLoading, error } = useLogIn();
+  const { logout } = useStore.getState();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    logout();
+  }, []);
 
+  const handleChange = ({ target: { name, value } }) => {
     setUser((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false);
-  };
+  const handleCloseSnackbar = () => setIsSnackbarOpen(false);
 
-  const validateForm = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorsMessage({ username: "", password: "" });
-    const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z0-9]{6,}$/;
-    const usernamePattern = /^[0-9A-Za-z]{6,16}$/;
-    const { login, password } = user;
-
-    if (!login.trim()) {
-      setErrorsMessage({ username: "Login is required." });
-      return;
-    }
-
-    if (!usernamePattern.test(login)) {
-      setErrorsMessage({
-        username: "Login must be 6-16 characters long and contain only letters and numbers.",
-      });
-      return;
-    }
-
-    if (!password.trim()) {
-      setErrorsMessage({ password: "Password is required." });
-      return;
-    }
-
-    if (!passwordPattern.test(password)) {
-      setErrorsMessage({
-        password: "Password must be 6+ characters long and contain both letters and numbers.",
-      });
-      return;
-    }
+    if (!validate(newUser)) return;
 
     try {
-      await logIn(user);
-      navigate("/profile");
+      await logIn(newUser);
+      navigate(`/user/${newUser.login}`);
     } catch {
-      setOpenSnackbar(true);
+      setIsSnackbarOpen(true);
     }
   };
 
   return (
     <Container>
-      <Form onSubmit={validateForm}>
+      <Form onSubmit={handleSubmit}>
         <Title>Log In</Title>
         <CustomInput
           name="login"
           inputType="text"
           placeholderText="Your login..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.username}
+          errorMessage={errors.login}
           autoCompleteValue="username"
         />
         <CustomInput
@@ -85,7 +64,7 @@ const SignInPage = () => {
           inputType="password"
           placeholderText="Your password..."
           handleChangeInput={handleChange}
-          errorMessage={errorsMessage.password}
+          errorMessage={errors.password}
           autoCompleteValue="current-password"
         />
         <Button type="submit" disabled={isLoading}>
@@ -97,8 +76,8 @@ const SignInPage = () => {
       </Form>
 
       <CustomSnackbar
-        open={openSnackbar}
-        message={error?.message || "Failed to sign up"}
+        open={isSnackbarOpen}
+        message={error?.message || "Failed to sign in"}
         handleClose={handleCloseSnackbar}
         autoHideDuration={2000}
       />

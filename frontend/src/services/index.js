@@ -18,16 +18,29 @@ const refreshTokenService = async () => {
   return response.data.accessToken;
 };
 
-const addCoinService = async (login, coin) => {
-  const response = await $api.post(`/user/coins/add`, { login, coin });
-
-  return response.data;
-};
-
 const currentUserService = async () => {
   const response = await $api.get(`/user/me`);
 
   return response.data;
 };
 
-export { logInService, signUpService, refreshTokenService, addCoinService, currentUserService };
+const getUserByLoginService = async (login) => {
+  const response = await $api.get(`/user/${login}`);
+
+  return response.data;
+};
+
+const addCoinService = async (login, coin) => {
+  const response = await $api.post(`/user/coins/add`, { login, coin });
+
+  return response.data;
+};
+
+export {
+  logInService,
+  signUpService,
+  refreshTokenService,
+  addCoinService,
+  currentUserService,
+  getUserByLoginService,
+};

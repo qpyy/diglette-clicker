@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useStore } from "../store/useStore";
 import { refreshTokenService } from "../services";
 
 const $api = axios.create({
@@ -9,7 +8,7 @@ const $api = axios.create({
 
 $api.interceptors.request.use(
   (config) => {
-    const { accessToken } = useStore.getState();
+    const accessToken = localStorage.getItem("accessToken");
 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
@@ -25,7 +24,6 @@ $api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
     originalRequest._retry = false;
-    const { setAccessToken, logout } = useStore.getState();
 
     if (error.response.data.status === 403.7 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -33,7 +31,7 @@ $api.interceptors.response.use(
       try {
         const newAccessToken = await refreshTokenService();
 
-        setAccessToken(newAccessToken);
+        localStorage.setItem("accessToken", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
         return $api(originalRequest);
@@ -43,7 +41,6 @@ $api.interceptors.response.use(
     }
 
     if (error.response.data.status === 403.13) {
-      logout();
       window.location.href = "/signin";
       return Promise.reject(error);
     }

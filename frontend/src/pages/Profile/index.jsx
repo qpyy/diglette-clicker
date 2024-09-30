@@ -1,34 +1,32 @@
-import { useEffect } from "react";
-import DigletAnimation from "../../components/DigletAnimation";
-import { useStore } from "../../store/useStore";
+import { useParams } from "react-router-dom";
+import CurrentUser from "../../components/CurrentUser";
+import AnotherUser from "../../components/AnotherUser";
+import Loader from "../../components/UI/Loader";
+import { useGetUserByLogin } from "../../hooks/useGetUserByLogin";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { useCoins } from "../../hooks/useCoins";
-import { Container } from "./styles";
+import { useStore } from "../../store/useStore";
+import { StyledProfileWrapper } from "./styles";
 
 const Profile = () => {
-  const { addCoins } = useCoins();
-  const { getCurrentUser, isLoading } = useCurrentUser();
-  const { user } = useStore.getState();
+  const { login } = useParams();
+  const { user, isLoading: isCurrentUserLoading } = useCurrentUser();
+  const { otherUser, isLoading: isOtherUserLoading } = useGetUserByLogin(login);
+  const { user: currentUser } = useStore.getState();
 
-  useEffect(() => {
-    getCurrentUser();
-  }, [getCurrentUser]);
-
-  const incrementCount = () => {
-    addCoins(10);
-  };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (isCurrentUserLoading || isOtherUserLoading || !user || !otherUser) {
+    return <Loader />;
   }
 
+  const isCurrentUser = user?.id === otherUser?.id;
+
   return (
-    <Container>
-      <div>
-        <h1>{user.coins}</h1>
-      </div>
-      <DigletAnimation incrementCount={incrementCount} />
-    </Container>
+    <StyledProfileWrapper>
+      {isCurrentUser ? (
+        <CurrentUser currentUser={currentUser} />
+      ) : (
+        <AnotherUser otherUser={otherUser} />
+      )}
+    </StyledProfileWrapper>
   );
 };
 
