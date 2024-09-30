@@ -36,7 +36,7 @@ const SignUpPage = () => {
     if (!validate(newUser)) return;
 
     try {
-      await signUp({ email: newUser.email, login: newUser.login, password: newUser.password });
+      await signUp(newUser);
       navigate(`/user/${newUser.login}`);
     } catch {
       setIsSnackbarOpen(true);
