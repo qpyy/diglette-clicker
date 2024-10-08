@@ -128,9 +128,6 @@ const addCoinsToUserAccount = async (body) => {
     };
   };
 
-
-
-
   const levelAndExperince = calculateExperienceToNextLevel(existingUser.experience, existingUser.level);
 
   await existingUser.save();
