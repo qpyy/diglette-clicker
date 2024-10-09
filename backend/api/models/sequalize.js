@@ -7,6 +7,21 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
 });
 
+const LvlUsers = sequelize.define(
+  "LvlUsers", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  experienceToNextLevel: {
+    type: DataTypes.INTEGER
+  },
+  experienceCurrentLevel: {
+    type: DataTypes.INTEGER
+  }
+});
+
 const Users = sequelize.define(
   "Users",
   {
@@ -44,6 +59,10 @@ const Users = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    experience: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    }
   },
   {
     timestamps: true,
@@ -83,6 +102,7 @@ const TokenSchema = sequelize.define(
   try {
     await Users.sync({ force: false }); // Синхронизируем модель users, если в базе данных не создана модель, написать true, после выполнения сразу написать false
     await TokenSchema.sync({ force: false });
+    await LvlUsers.sync({ force: false });
     await sequelize.authenticate();
     console.log("Соединение с БД было успешно установлено");
   } catch (e) {
@@ -94,4 +114,5 @@ module.exports = {
   sequelize,
   Users,
   TokenSchema,
+  LvlUsers,
 };

@@ -63,6 +63,6 @@ const getUserInfo = async (id) => {
     console.log(err);
     throw err;
   }
-}
+};
 
 module.exports = { activate, logoutUser, refreshFunc, getUserInfo };
