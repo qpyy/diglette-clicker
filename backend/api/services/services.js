@@ -30,7 +30,7 @@ const getUser = async (body) => {
     throw new VerifyError('Почта не прошла верификацию, активируйте свой профиль перейдя по ссылке отправленной вам на почту');
   }
 
-  const tokens = await tokenService(userDto.toJSON());
+  const tokens = await tokenService(userDto.toPayload());
 
   await saveToken(userDto.toJSON().id, tokens.refreshToken);
 
@@ -73,7 +73,7 @@ const createUser = async (body) => {
   await mailService(email, `${process.env.API_URL}/activate/${activationLink}`);
 
   const userDto = new UserDto(newUser);
-  const tokens = await tokenService(userDto.toJSON());
+  const tokens = await tokenService(userDto.toPayload());
 
   await saveToken(userDto.toJSON().id, tokens.refreshToken);
 
@@ -93,6 +93,10 @@ const addCoinsToUserAccount = async (body) => {
 
   if (!existingUser) {
     throw new BadRequestError(`Пользователь со следующим логином ${login} не найден`, 400);
+  }
+
+  if (!existingUser.isActivated) {
+    throw new VerifyError('Почта не прошла верификацию, активируйте свой профиль перейдя по ссылке отправленной вам на почту');
   }
 
   existingUser.coins += coin;

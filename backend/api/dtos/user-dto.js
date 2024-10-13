@@ -26,6 +26,13 @@ class UserDto {
     }
   }
 
+  toPayload() {
+    return {
+      id: this.id,
+      login: this.login,
+    }
+  }
+
   toProfile() {
     return {
       id: this.id,

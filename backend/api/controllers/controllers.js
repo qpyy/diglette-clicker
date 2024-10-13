@@ -88,7 +88,6 @@ const currentUser = async (req, res) => {
 const profileUsers = async (req, res) => {
   try {
     const login = req.params.login;
-    // console.log(login);
     const resultSearchUsers = await getProfileUsers(login);
     res.status(200).send(resultSearchUsers);
   } catch (error) {
